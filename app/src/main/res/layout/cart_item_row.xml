@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <ImageView
+        android:id="@+id/cartImageView"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/headphone"/>
+
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/cartImageView"
+        android:layout_alignTop="@id/cartImageView"
+        android:text="Name name "
+        android:maxLines="2"
+        android:layout_margin="8dp"
+        />
+
+    <TextView
+        android:id="@+id/priceTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/titleTextView"
+        android:layout_toEndOf="@id/cartImageView"
+        android:maxLines="1"
+        android:text="$ 300 "
+        android:layout_margin="8dp"
+        />
+
+    <Button
+        android:id="@+id/removeCartButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/priceTextView"
+        android:layout_toEndOf="@id/cartImageView"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginLeft="8dp"
+        android:textAllCaps="false"
+        android:text="Remove From Cart"/>
+
+</RelativeLayout>
