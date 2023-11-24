@@ -33,11 +33,18 @@ class ProductDetailActivity : AppCompatActivity() {
         Log.d("ProductDetailActivity","populateDetails "+product?.title )
         val imageResId = resources.getIdentifier(product?.image, "drawable", packageName)
         imageView.setImageResource(imageResId)
-        productTiletextView.setText(product?.title)
-        productPriceTextView.setText(product?.price)
-
+        productTiletextView.text = product?.title
+        productPriceTextView.text = product?.price
+        findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar).title = product?.title
+        setSupportActionBar(findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar))
+        supportActionBar?.setDisplayHomeAsUpEnabled(true);
+        supportActionBar?.setDisplayShowHomeEnabled(true);
     }
 
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+    }
     fun sendAddToCartResult(){
         Log.d("ProductDetailActivity","sendAddToCartResult called " )
         val resultIntent = Intent()
