@@ -9,7 +9,9 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.fragment.app.Fragment
+import com.google.android.material.textfield.TextInputEditText
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -43,8 +45,8 @@ class UserFragment : Fragment() {
 
         val view = inflater.inflate(R.layout.fragment_user, container, false)
 
-        val usernameEditText = view.findViewById<EditText>(R.id.usernameEditText)
-        val passwordEditText = view.findViewById<EditText>(R.id.passwordEditText)
+        val usernameEditText = view.findViewById<TextInputEditText>(R.id.usernameEditText)
+        val passwordEditText = view.findViewById<TextInputEditText>(R.id.passwordEditText)
         val loginButton = view.findViewById<Button>(R.id.loginButton)
         val logoutButton = view.findViewById<Button>(R.id.logoutButton)
         val usernameTextView = view.findViewById<TextView>(R.id.usernameTextView)
@@ -105,30 +107,26 @@ class UserFragment : Fragment() {
     }
     private fun welcomeUser(userName:String, usernameTextView:TextView){
         usernameTextView.visibility = View.VISIBLE
-        usernameTextView.setText("Welcome ".plus(userName).plus(" User to the Shopping festival"))
+        usernameTextView.text = ("Welcome\n".plus(userName).plus("\nto the Shopping festival"))
     }
     private fun showLoginElements(){
         val usernameEditText = view?.findViewById<EditText>(R.id.usernameEditText)
         val passwordEditText = view?.findViewById<EditText>(R.id.passwordEditText)
-        val loginButton = view?.findViewById<Button>(R.id.loginButton)
-        val logoutButton = view?.findViewById<Button>(R.id.logoutButton)
         usernameEditText?.visibility = View.VISIBLE
+        usernameEditText?.setText("")
+        passwordEditText?.setText("")
         passwordEditText?.visibility = View.VISIBLE
-        loginButton?.visibility = View.VISIBLE
-        logoutButton?.visibility = View.GONE
+        view?.findViewById<LinearLayoutCompat>(R.id.ll_logIn)?.visibility = View.VISIBLE
+        view?.findViewById<LinearLayoutCompat>(R.id.ll_logout)?.visibility = View.GONE
     }
 
     private fun hideLoginElements(){
         val usernameEditText = view?.findViewById<EditText>(R.id.usernameEditText)
         val passwordEditText = view?.findViewById<EditText>(R.id.passwordEditText)
-        val loginButton = view?.findViewById<Button>(R.id.loginButton)
-        val logoutButton = view?.findViewById<Button>(R.id.logoutButton)
         usernameEditText?.visibility = View.GONE
         passwordEditText?.visibility = View.GONE
-        loginButton?.visibility = View.INVISIBLE
-        logoutButton?.visibility = View.VISIBLE
-
-
+        view?.findViewById<LinearLayoutCompat>(R.id.ll_logIn)?.visibility = View.GONE
+        view?.findViewById<LinearLayoutCompat>(R.id.ll_logout)?.visibility = View.VISIBLE
     }
 companion object {
         /**

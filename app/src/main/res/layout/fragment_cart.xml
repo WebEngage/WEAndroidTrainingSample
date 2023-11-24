@@ -8,42 +8,48 @@
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
+        android:layout_margin="10dp"
         android:id="@+id/cartItemsTitle"
+        style="@style/PrimaryText"
+        android:textAlignment="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textStyle="bold"
-        android:textSize="25sp"
-        android:layout_margin="20dp"
         android:text="Cart Items" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/cartItemsHolderRecycler"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
+
     <LinearLayout
-        android:orientation="horizontal"
+        android:id="@+id/buttonLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:layout_gravity="bottom"
+        android:gravity="bottom"
         android:layout_marginBottom="10dp"
-        android:id="@+id/buttonLayout">
-        <Button
+        android:layout_weight="2"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/cancelButton"
-            android:layout_weight="1"
+            style="@style/ButtonStyleBlank"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:text="Cancel"/>
+            android:layout_height="55dp"
+            android:layout_weight="1"
+            android:text="Cancel" />
+
         <Button
             android:id="@+id/buyNowButton"
-            android:layout_weight="1"
+            style="@style/ButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:text="Buy Now"/>
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:text="Buy Now" />
 
     </LinearLayout>
 

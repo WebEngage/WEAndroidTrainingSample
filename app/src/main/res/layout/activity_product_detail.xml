@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,6 +9,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/app_bar"
         android:theme="@style/Theme.Shopping.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
@@ -23,20 +24,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/app_bar"
         android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="75dp"
-            android:gravity="center"
-            android:text="Product Details" />
 
         <ImageView
             android:id="@+id/productImageView"
             android:layout_width="match_parent"
             android:layout_height="250dp"
-            android:layout_margin="25dp"
+            android:padding="10dp"
+            android:background="@color/bg"
             android:scaleType="fitCenter"
             android:src="@drawable/headphone" />
 
@@ -44,33 +40,34 @@
             android:id="@+id/titleTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="20dp"
-            android:gravity="left"
+            android:padding="10dp"
+            android:gravity="start"
+            style="@style/PrimaryText"
             android:text="Product Name" />
 
         <TextView
             android:id="@+id/priceTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:gravity="left"
+            android:padding="10dp"
+            android:gravity="start"
+            style="@style/PrimaryText"
             android:text="Price" />
 
-        <Button
-            android:id="@+id/addToCartButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:paddingLeft="40dp"
-            android:paddingTop="15dp"
-            android:paddingRight="40dp"
-            android:paddingBottom="15dp"
-            android:text="Add to Cart"
-            android:textAllCaps="false"
-            android:textStyle="bold" />
     </LinearLayout>
 
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    <Button
+        android:id="@+id/addToCartButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:padding="10dp"
+        android:layout_margin="10dp"
+        android:text="Add to Cart"
+        style="@style/ButtonStyle"
+        android:background="@drawable/rounded_bg"
+        android:textAllCaps="false"
+        android:textStyle="bold" />
+
+</RelativeLayout>

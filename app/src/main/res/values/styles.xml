@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary Text Style -->
+    <style name="PrimaryText">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">#212121</item>
+        <item name="android:fontFamily">sans-serif-black</item>
+    </style>
+
+    <!-- Secondary Text Style -->
+    <style name="SecondaryText">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#808080</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <!-- Button Style -->
+    <style name="ButtonStyle">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:background">@drawable/rounded_bg</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:padding">12dp</item>
+    </style>
+
+    <style name="ButtonStyleBlank" parent="ThemeOverlay.Material3.Button.TextButton">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/purple_700</item>
+        <item name="android:background">@drawable/rounded_border_bg</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:padding">12dp</item>
+    </style>
+
+    <!-- Card View Style -->
+    <style name="CardViewStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="cardCornerRadius">8dp</item>
+        <item name="cardElevation">4dp</item>
+        <item name="cardBackgroundColor">#ffffff</item>
+        <!-- You can include more specific styles for the content inside the card if needed -->
+    </style>
+
+</resources>

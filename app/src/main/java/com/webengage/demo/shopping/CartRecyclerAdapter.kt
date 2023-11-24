@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -20,7 +21,7 @@ class CartRecyclerAdapter(
         val imageView: ImageView = itemView.findViewById(R.id.cartImageView)
         val titleTextView: TextView = itemView.findViewById(R.id.titleTextView)
         val priceTextView: TextView = itemView.findViewById(R.id.priceTextView)
-        val button: Button = itemView.findViewById(R.id.removeCartButton)
+        val button: ImageButton = itemView.findViewById(R.id.removeCartButton)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
