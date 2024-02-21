@@ -11,8 +11,6 @@ class ShoppingApplication : Application() {
     }
 
     fun getAppContext(): Context? {
-        //Log.d("ShoppingApplication", "getAppContext mContext == null " + (ShoppingApplication.mContext == null) );
         return mContext
     }
-
 }

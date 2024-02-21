@@ -1,11 +1,9 @@
 package com.webengage.demo.shopping
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -36,17 +34,14 @@ class CartRecyclerAdapter(
         holder.imageView.setImageResource(resId)
         holder.titleTextView.text = item.title
         holder.priceTextView.text = item.price
-        holder.button.setOnClickListener{ onButtonClickListener(item)}
-        Log.d("CartRecyclerAdapter", "onBindViewHolder " + item.title)
-        // Set a click listener for the button
-        //holder.button.setOnClickListener { onButtonClickListener(item) }
+        holder.button.setOnClickListener { onButtonClickListener(item) }
     }
 
     override fun getItemCount(): Int {
         return itemList.size
     }
 
-    fun refreshList(list: List<Product>) { Log.d("CartRecyclerAdapter", "refreshList list.size "+list)
+    fun refreshList(list: List<Product>) {
         itemList = list
         notifyDataSetChanged()
     }

@@ -3,7 +3,6 @@ package com.webengage.demo.shopping
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,8 +32,8 @@ class HomeProductsFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    private lateinit var clickedProduct:Product
-    private var clickedCategoryIndex:Int = -1
+    private lateinit var clickedProduct: Product
+    private var clickedCategoryIndex: Int = -1
 
 
     val jsonArrayString: String = "[\n" +
@@ -124,8 +123,6 @@ class HomeProductsFragment : Fragment() {
     private lateinit var productDetailActivityResultLauncher: ActivityResultLauncher<Intent>
 
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -134,17 +131,16 @@ class HomeProductsFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
-        productDetailActivityResultLauncher= registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            Log.d("HomeProductsFragment","productDetailActivityResultLauncher called " )
-            if (result.resultCode == Activity.RESULT_OK) {
-                val data: Intent? = result.data
-                val returnedBoolean = data?.getBooleanExtra("added",false)
-                Log.d("HomeProductsFragment","returnedBoolean added "+ returnedBoolean)
-                if (returnedBoolean != false) {
-                    updateCartData()
+        productDetailActivityResultLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    val data: Intent? = result.data
+                    val returnedBoolean = data?.getBooleanExtra("added", false)
+                    if (returnedBoolean != false) {
+                        updateCartData()
+                    }
                 }
             }
-        }
         stringToJsonObjectModel()
     }
 
@@ -152,7 +148,6 @@ class HomeProductsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        Log.d("HomeProductsFragment", "onCreateView "+categories.size)
         // Inflate the layout for this fragment
         return inflater.inflate(
             com.webengage.demo.shopping.R.layout.fragment_product_list,
@@ -163,7 +158,6 @@ class HomeProductsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("HomeProductsFragment", "onViewCreated "+categories.size)
         addContentToScrollView()
 
     }
@@ -183,6 +177,7 @@ class HomeProductsFragment : Fragment() {
          * @return A new instance of fragment HomeProductsFragment.
          */
         const val TAG = "HOME"
+
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
@@ -200,7 +195,7 @@ class HomeProductsFragment : Fragment() {
         val jsonArray = JSONArray(jsonArrayString)
 
 // Create a list to store the ProductCategory objects
-        if(categories.size>0){
+        if (categories.size > 0) {
             return
         }
 
@@ -228,9 +223,6 @@ class HomeProductsFragment : Fragment() {
             val category = ProductCategory(title, products)
             categories.add(category)
         }
-        /*val viewModel = ViewModelProvider(requireActivity()).get(CartViewModel::class.java)
-        if(clickedProduct!=null)
-            viewModel.updateItemList(clickedProduct)*/
 
     }
 
@@ -241,23 +233,13 @@ class HomeProductsFragment : Fragment() {
     )
 
     private fun addContentToScrollView() {
-        val imageHolderLinearLayout = view?.findViewById<LinearLayout>(R.id.imageContainer_1)
-        var index = 0;
-        val imageCount = imageHolderLinearLayout?.childCount
-        if (imageCount != null && imageCount > 0) {
-            //return
-        }
-        val timeLocal = System.currentTimeMillis()
-        Log.d("addContentToScrollView", "imageCount "+imageCount)
-        Log.d("addContentToScrollView", "time start "+timeLocal)
+        var index = 0
         for (category in categories) {
             val textView = view?.findViewById<TextView>(headingsResourceId[index])
             textView?.setText(category.title)
-            //Log.d("addContentToScrollView", "Product: Title ${category.title}")
             addIconstoScrollView(category.products, index)
             index += 1;
         }
-        Log.d("addContentToScrollView", "time end "+(System.currentTimeMillis() - timeLocal))
 
     }
 
@@ -275,8 +257,10 @@ class HomeProductsFragment : Fragment() {
             textView.text = product.title
             // Add the child layout to the horizontalLayout
             imageHolderLinearLayout?.addView(childLayout)
-            childLayout.setOnClickListener {
-                startDetailsActivityForResult(product,index)
+            if (product != null) {
+                childLayout.setOnClickListener {
+                    startDetailsActivityForResult(product, index)
+                }
             }
         }
 
@@ -284,18 +268,16 @@ class HomeProductsFragment : Fragment() {
 
     // ...
 
-    private fun updateCartData(){
+    private fun updateCartData() {
         val viewModel = ViewModelProvider(requireActivity()).get(CartViewModel::class.java)
-        if(clickedProduct!=null){
-            Log.d("HomeProductsFragment","updateCartData "+clickedProduct.title)
-            viewModel.updateItemList(clickedProduct)
-        }
+        viewModel.updateItemList(clickedProduct)
     }
+
     fun startDetailsActivityForResult(product: Product, index: Int) {
         clickedProduct = product
         clickedCategoryIndex = index
         val intent = Intent(context, ProductDetailActivity::class.java)
-        intent.putExtra("product",product)
+        intent.putExtra("product", product)
         productDetailActivityResultLauncher.launch(intent)
     }
 }
