@@ -23,9 +23,11 @@ class CartViewModel : ViewModel() {
     }
 
     fun removeAllItems() {
-        val list = itemList.value?.toMutableList()
-        list?.removeAll(list)
-        itemList.value = list
+        if (itemList != null && itemList.value?.size!! > 0) {
+            val list = itemList.value?.toMutableList()
+            list?.removeAll(list)
+            itemList.value = list
+        }
 
     }
 }
