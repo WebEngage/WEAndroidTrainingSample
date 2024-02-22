@@ -1,14 +1,17 @@
 package com.webengage.demo.shopping
 
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.WindowInsets
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
+import com.webengage.sdk.android.WebEngage
 
 class MainActivity : AppCompatActivity(), FragmentListener {
 
@@ -16,6 +19,9 @@ class MainActivity : AppCompatActivity(), FragmentListener {
     private val userFragment = UserFragment()
     private val cartFragment = CartFragment()
     lateinit var bottomNavigationView: BottomNavigationView
+    private val PUSH_NOTIFICATIONS =
+        "android.permission.POST_NOTIFICATIONS" //Applicable from Android 13 and above
+
 
     //private val cartList = mutableListOf<ProductCategory>()
     private val bottomNavigationSelectedListener =
@@ -42,8 +48,46 @@ class MainActivity : AppCompatActivity(), FragmentListener {
         bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottomNavigationView.setOnItemSelectedListener(bottomNavigationSelectedListener)
         loadFragment(HomeProductsFragment.TAG)
+        checkForPushPermission()
     }
 
+    private fun checkForPushPermission() {
+        //For App's targeting below 33
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (Build.VERSION.SDK_INT >= 33) {
+                Log.d("",
+                    "onResume: checking for PUSH_NOTIFICATIONS: " + (checkSelfPermission(PUSH_NOTIFICATIONS) === PackageManager.PERMISSION_GRANTED)
+                )
+                if (checkSelfPermission(PUSH_NOTIFICATIONS) !== PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(
+                        arrayOf<String>(PUSH_NOTIFICATIONS),
+                        102
+                    )
+                    WebEngage.get().user().setDevicePushOptIn(false)
+                } else {
+                    WebEngage.get().user().setDevicePushOptIn(true)
+                }
+            }
+        }
+    }
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String?>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        Log.d(
+            "",
+            "onRequestPermissionsResult permissions: $permissions grantResults: $grantResults"
+        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(PUSH_NOTIFICATIONS) === PackageManager.PERMISSION_GRANTED) {
+                WebEngage.get().user().setDevicePushOptIn(true)
+            } else {
+                WebEngage.get().user().setDevicePushOptIn(false)
+            }
+        }
+    }
     private fun loadFragment(fragmentTag: String) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
@@ -85,6 +129,7 @@ class MainActivity : AppCompatActivity(), FragmentListener {
             loadFragment(actionType)
         }
     }
+
 
 
 }
