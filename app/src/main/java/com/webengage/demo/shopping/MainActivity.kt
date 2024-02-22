@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity(), FragmentListener {
     private val homeFragment = HomeProductsFragment()
     private val userFragment = UserFragment()
     private val cartFragment = CartFragment()
-    lateinit var bottomNavigationView: BottomNavigationView
+    private lateinit var bottomNavigationView: BottomNavigationView
     private val PUSH_NOTIFICATIONS =
         "android.permission.POST_NOTIFICATIONS" //Applicable from Android 13 and above
 
@@ -27,9 +27,15 @@ class MainActivity : AppCompatActivity(), FragmentListener {
     private val bottomNavigationSelectedListener =
         NavigationBarView.OnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.action_home -> loadFragment(HomeProductsFragment.TAG)
-                R.id.action_cart -> loadFragment(CartFragment.TAG)
-                R.id.action_profile -> loadFragment(UserFragment.TAG)
+                R.id.action_home -> {
+                    loadFragment(HomeProductsFragment.TAG, "HomeScreen")
+                }
+                R.id.action_cart -> {
+                    loadFragment(CartFragment.TAG, "CartScreen")
+                }
+                R.id.action_profile -> {
+                    loadFragment(UserFragment.TAG, "User_Profile")
+                }
             }
             true
         }
@@ -47,7 +53,7 @@ class MainActivity : AppCompatActivity(), FragmentListener {
         setContentView(R.layout.activity_main)
         bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottomNavigationView.setOnItemSelectedListener(bottomNavigationSelectedListener)
-        loadFragment(HomeProductsFragment.TAG)
+        loadFragment(HomeProductsFragment.TAG, "HomeScreen")
         checkForPushPermission()
     }
 
@@ -88,7 +94,7 @@ class MainActivity : AppCompatActivity(), FragmentListener {
             }
         }
     }
-    private fun loadFragment(fragmentTag: String) {
+    private fun loadFragment(fragmentTag: String, screenName: String) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         for (fragment in fragmentManager.fragments) {
@@ -109,6 +115,7 @@ class MainActivity : AppCompatActivity(), FragmentListener {
         }
 
         fragmentTransaction.commit()
+        weAnalytics.screenNavigated(screenName)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -126,10 +133,9 @@ class MainActivity : AppCompatActivity(), FragmentListener {
 
     override fun onFragmentAction(actionType: String) {
         if (actionType.equals(HomeProductsFragment.TAG)) {
-            loadFragment(actionType)
+            loadFragment(actionType, "HomeScreen")
         }
     }
-
 
 
 }

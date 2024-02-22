@@ -56,7 +56,6 @@ class CartFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        weAnalytics.screenNavigated("Cart_Screen")
     }
 
 
