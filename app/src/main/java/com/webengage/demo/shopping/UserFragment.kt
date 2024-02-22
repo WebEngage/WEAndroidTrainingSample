@@ -1,5 +1,6 @@
 package com.webengage.demo.shopping
 
+import android.R.string
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -12,6 +13,9 @@ import android.widget.Toast
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.textfield.TextInputEditText
+import com.webengage.sdk.android.WebEngage
+import com.webengage.sdk.android.utils.Gender
+import java.util.Dictionary
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -27,6 +31,7 @@ class UserFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    val weUser = WebEngage.get().user()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +39,40 @@ class UserFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val storedUSerName = SharedPrefsManager.getString(SharedPrefsManager.USERNAME,"")
+        val data = mutableMapOf<String, Any>()
+
+        if(TextUtils.isEmpty(storedUSerName)){
+            data["isUserLoggedIn"] = false
+        }else{
+            data["isUserLoggedIn"] = true;
+            data["userName"] = storedUSerName;
+        }
+        weAnalytics.screenNavigated("User_Profile", data)
+    }
+
+    fun updateUserAttributes() {
+        weUser.setFirstName("John");
+        weUser.setLastName("Doe");
+        weUser.setCompany("Alphabet Inc.");
+        weUser.setEmail("john@doe.com");
+        weUser.setHashedEmail("144e0424883546e07dcd727057fd3b62");
+        weUser.setBirthDate("1986-08-19");
+        weUser.setPhoneNumber("+551155256325");
+        weUser.setGender(Gender.MALE);
+        val latitude = 19.0822
+        val longitude = 72.8417
+        weUser.setLocation(latitude, longitude)
+
+
+        // Custom Attribute
+        weUser.setAttribute("Age", 31);
+
+
     }
 
     override fun onCreateView(
@@ -64,6 +103,8 @@ class UserFragment : Fragment() {
             if (isValidCredentials(userName, password)) {
                 hideLoginElements()
                 welcomeUser(userName,usernameTextView)
+                WebEngage.get().user().login(userName)
+                updateUserAttributes()
                 SharedPrefsManager.putString(SharedPrefsManager.USERNAME,userName)
             } else {
                 // Display an error message or handle failed login

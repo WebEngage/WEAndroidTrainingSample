@@ -13,11 +13,13 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.webengage.sdk.android.WebEngage
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
+val weAnalytics = WebEngage.get().analytics()
 
 /**
  * A simple [Fragment] subclass.
@@ -50,6 +52,11 @@ class CartFragment : Fragment() {
             param2 = it.getString(ARG_PARAM2)
         }
 
+    }
+
+    override fun onStart() {
+        super.onStart()
+        weAnalytics.screenNavigated("Cart_Screen")
     }
 
 

@@ -14,6 +14,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.webengage.sdk.android.WebEngage
 import org.json.JSONArray
 
 
@@ -34,6 +35,7 @@ class HomeProductsFragment : Fragment() {
     private var param2: String? = null
     private lateinit var clickedProduct: Product
     private var clickedCategoryIndex: Int = -1
+    val weAnalytics = WebEngage.get().analytics()
 
 
     val jsonArrayString: String = "[\n" +
@@ -164,7 +166,7 @@ class HomeProductsFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-
+        weAnalytics.screenNavigated("Home_Screen")
     }
 
     companion object {

@@ -8,8 +8,13 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.webengage.sdk.android.Logger
+import com.webengage.sdk.android.WebEngage
 
 class ProductDetailActivity : AppCompatActivity() {
+
+    val weAnalytics = WebEngage.get().analytics()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,9 +25,28 @@ class ProductDetailActivity : AppCompatActivity() {
             intent.getSerializableExtra("product") as Product
         }
         val addToCartButton = findViewById<Button>(R.id.addToCartButton)
-        addToCartButton.setOnClickListener { sendAddToCartResult() }
+        addToCartButton.setOnClickListener { sendAddToCartResult(product) }
         populateDetails(product)
 
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val product = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getSerializableExtra("product", Product::class.java)
+        } else {
+            intent.getSerializableExtra("product") as Product
+        }
+        val data = mutableMapOf<String, Any>()
+        if (product != null) {
+            data["title"] = product.title
+            data["price"] = product.price
+        }
+        if(data.isEmpty()) {
+            weAnalytics.screenNavigated("Product_Details")
+        } else {
+            weAnalytics.screenNavigated("Product_Details", data)
+        }
     }
 
     private fun populateDetails(product: Product?) {
@@ -44,9 +68,15 @@ class ProductDetailActivity : AppCompatActivity() {
         return true
     }
 
-    fun sendAddToCartResult() {
+    fun sendAddToCartResult(product: Product?) {
         val resultIntent = Intent()
         resultIntent.putExtra("added", true)
+        val addedToCartAttributes: MutableMap<String, Any> = HashMap()
+        if (product != null) {
+            addedToCartAttributes["Title"] = product.title
+            addedToCartAttributes["price"] = product.price
+            weAnalytics.track("Added to Cart", addedToCartAttributes)
+        }
         setResult(Activity.RESULT_OK, resultIntent)
         finish()
     }
