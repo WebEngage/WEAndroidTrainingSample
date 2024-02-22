@@ -52,7 +52,6 @@ class UserFragment : Fragment() {
             data["isUserLoggedIn"] = true;
             data["userName"] = storedUSerName;
         }
-        weAnalytics.screenNavigated("User_Profile", data)
     }
 
     fun updateUserAttributes() {

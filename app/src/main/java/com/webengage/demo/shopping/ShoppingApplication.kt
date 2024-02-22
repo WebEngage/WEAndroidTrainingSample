@@ -10,16 +10,20 @@ class ShoppingApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         mContext = this.applicationContext
+        initWebEngage()
+    }
+
+    private fun initWebEngage() {
         val webEngageConfig = WebEngageConfig.Builder()
-            .setWebEngageKey("YOUR_WEBENGAGE_LICENSE_CODE")
+            .setWebEngageKey("~2024b713")
             .setDebugMode(true) // only in development mode
             .build()
         registerActivityLifecycleCallbacks(
             WebEngageActivityLifeCycleCallbacks(
                 this,
                 webEngageConfig
-            ))
-
+            )
+        )
     }
 
     fun getAppContext(): Context? {

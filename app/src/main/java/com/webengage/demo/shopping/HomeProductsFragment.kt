@@ -38,7 +38,7 @@ class HomeProductsFragment : Fragment() {
     val weAnalytics = WebEngage.get().analytics()
 
 
-    val jsonArrayString: String = "[\n" +
+    private val jsonArrayString: String = "[\n" +
             "    {\n" +
             "        \"title\": \"Electronics\",\n" +
             "        \"products\": [\n" +
@@ -115,8 +115,8 @@ class HomeProductsFragment : Fragment() {
             "        ]\n" +
             "    }\n" +
             "]"
-    val categories = mutableListOf<ProductCategory>()
-    val imageLayoutsResourceId = intArrayOf(
+    private val categories = mutableListOf<ProductCategory>()
+    private val imageLayoutsResourceId = intArrayOf(
         R.id.imageContainer_1,
         R.id.imageContainer_2,
         R.id.imageContainer_3
@@ -166,7 +166,6 @@ class HomeProductsFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        weAnalytics.screenNavigated("Home_Screen")
     }
 
     companion object {
@@ -228,7 +227,7 @@ class HomeProductsFragment : Fragment() {
 
     }
 
-    val headingsResourceId = intArrayOf(
+    private val headingsResourceId = intArrayOf(
         R.id.heading_1,
         R.id.heading_2,
         R.id.heading_3
