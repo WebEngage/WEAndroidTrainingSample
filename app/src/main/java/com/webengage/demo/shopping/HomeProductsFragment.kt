@@ -3,6 +3,7 @@ package com.webengage.demo.shopping
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,8 +15,14 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.webengage.personalization.WEPersonalization
+import com.webengage.personalization.callbacks.WECampaignCallback
+import com.webengage.personalization.callbacks.WEPlaceholderCallback
+import com.webengage.personalization.data.WECampaignData
 import com.webengage.sdk.android.WebEngage
 import org.json.JSONArray
+
+import kotlin.math.log
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -29,7 +36,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [HomeProductsFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class HomeProductsFragment : Fragment() {
+class HomeProductsFragment : Fragment(), WEPlaceholderCallback, WECampaignCallback {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -166,8 +173,13 @@ class HomeProductsFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
+        WEPersonalization.get().registerWECampaignCallback(this)
     }
 
+    override fun onResume() {
+        super.onResume()
+        WEPersonalization.get().registerWEPlaceholderCallback("we_placeholder_home", this)
+    }
     companion object {
         /**
          * Use this factory method to create a new instance of
@@ -280,5 +292,48 @@ class HomeProductsFragment : Fragment() {
         val intent = Intent(context, ProductDetailActivity::class.java)
         intent.putExtra("product", product)
         productDetailActivityResultLauncher.launch(intent)
+    }
+
+    override fun onDataReceived(data: WECampaignData) {
+        Log.d("Tag", "mycallbacks onDataReceived ${data.targetViewId}, ${data.content!!.customData} ")
+        //Get the data for custom view and render your own UI by fetching data from the WECampaignData
+        //render the campaign on UI (own UI) and save the reference of WECampaignData attached with this UI,
+    //and when user clicks call the tackClick, as soon as yuo render call trackImpression
+    }
+
+    override fun onPlaceholderException(
+        campaignId: String?,
+        targetViewId: String,
+        error: Exception
+    ) {
+        Log.d("Tag", "mycallbacks onPlaceholderException $targetViewId, $error ")
+    }
+
+    override fun onRendered(data: WECampaignData) {
+        Log.d("Tag", "mycallbacks onRendered ${data.targetViewId}, ${data.content} ")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        WEPersonalization.get().unregisterWECampaignCallback(this)
+    }
+
+    override fun onCampaignClicked(
+        actionId: String,
+        deepLink: String,
+        data: WECampaignData
+    ): Boolean {
+        return false
+    }
+
+    override fun onCampaignException(campaignId: String?, targetViewId: String, error: Exception) {
+    }
+
+    override fun onCampaignPrepared(data: WECampaignData): WECampaignData? {
+        return data
+    }
+
+    override fun onCampaignShown(data: WECampaignData) {
+
     }
 }

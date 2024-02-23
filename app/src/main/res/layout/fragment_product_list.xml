@@ -12,6 +12,13 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <FrameLayout
+            android:id="@+id/we_placeholder_home"
+            android:layout_width="match_parent"
+            app:shouldCache="true"
+            android:layout_height="200dp"
+            android:visibility="gone"/>
+
         <TextView
             android:id="@+id/heading_1"
             style="@style/PrimaryText"
