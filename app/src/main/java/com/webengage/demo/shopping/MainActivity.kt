@@ -11,6 +11,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
+import com.webengage.demo.shopping.Constants.cartTAG
+import com.webengage.demo.shopping.Constants.homeTAG
+import com.webengage.demo.shopping.Constants.userTAG
+import com.webengage.demo.shopping.view.cart.CartFragment
+import com.webengage.demo.shopping.view.home.HomeProductsFragment
+import com.webengage.demo.shopping.view.user.UserFragment
 import com.webengage.sdk.android.WebEngage
 
 class MainActivity : AppCompatActivity(), FragmentListener {
@@ -22,19 +28,21 @@ class MainActivity : AppCompatActivity(), FragmentListener {
     private val PUSH_NOTIFICATIONS =
         "android.permission.POST_NOTIFICATIONS" //Applicable from Android 13 and above
 
+    private val weAnalytics = WebEngage.get().analytics()
 
-    //private val cartList = mutableListOf<ProductCategory>()
     private val bottomNavigationSelectedListener =
         NavigationBarView.OnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.action_home -> {
-                    loadFragment(HomeProductsFragment.TAG, "HomeScreen")
+                    loadFragment(homeTAG, "HomeScreen")
                 }
+
                 R.id.action_cart -> {
-                    loadFragment(CartFragment.TAG, "CartScreen")
+                    loadFragment(cartTAG, "CartScreen")
                 }
+
                 R.id.action_profile -> {
-                    loadFragment(UserFragment.TAG, "User_Profile")
+                    loadFragment(userTAG, "UserProfile")
                 }
             }
             true
@@ -53,7 +61,7 @@ class MainActivity : AppCompatActivity(), FragmentListener {
         setContentView(R.layout.activity_main)
         bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottomNavigationView.setOnItemSelectedListener(bottomNavigationSelectedListener)
-        loadFragment(HomeProductsFragment.TAG, "HomeScreen")
+        loadFragment(homeTAG, "HomeScreen")
         checkForPushPermission()
     }
 
@@ -106,9 +114,9 @@ class MainActivity : AppCompatActivity(), FragmentListener {
             fragmentTransaction.show(existingFragment)
         } else {
             val newFragment = when (fragmentTag) {
-                HomeProductsFragment.TAG -> homeFragment
-                UserFragment.TAG -> userFragment
-                CartFragment.TAG -> cartFragment
+                homeTAG -> homeFragment
+                userTAG -> userFragment
+                cartTAG -> cartFragment
                 else -> throw IllegalArgumentException("Unknown tag: $fragmentTag")
             }
             fragmentTransaction.add(R.id.fragment_container, newFragment, fragmentTag)
@@ -132,10 +140,8 @@ class MainActivity : AppCompatActivity(), FragmentListener {
     }
 
     override fun onFragmentAction(actionType: String) {
-        if (actionType.equals(HomeProductsFragment.TAG)) {
+        if (actionType == (homeTAG)) {
             loadFragment(actionType, "HomeScreen")
         }
     }
-
-
 }
