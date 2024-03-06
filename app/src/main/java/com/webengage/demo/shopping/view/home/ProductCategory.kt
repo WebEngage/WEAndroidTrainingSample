@@ -1,4 +1,4 @@
-package com.webengage.demo.shopping
+package com.webengage.demo.shopping.view.home
 
 import java.io.Serializable
 
