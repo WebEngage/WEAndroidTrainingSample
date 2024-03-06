@@ -1,4 +1,4 @@
-package com.webengage.demo.shopping
+package com.webengage.demo.shopping.view.cart
 
 import android.content.Context
 import android.os.Bundle
@@ -13,13 +13,13 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.webengage.demo.shopping.Constants.homeTAG
+import com.webengage.demo.shopping.FragmentListener
+import com.webengage.demo.shopping.view.home.HomeProductsFragment
+import com.webengage.demo.shopping.view.home.Product
+import com.webengage.demo.shopping.R
 import com.webengage.sdk.android.WebEngage
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-val weAnalytics = WebEngage.get().analytics()
 
 /**
  * A simple [Fragment] subclass.
@@ -30,11 +30,11 @@ class CartFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    lateinit var viewModel: CartViewModel
-    lateinit var buttonLayout: LinearLayout
-    lateinit var cartItemsTitle: TextView
-    lateinit var buyNowButton: Button
-    lateinit var cancelButton: Button
+    private lateinit var viewModel: CartViewModel
+    private lateinit var buttonLayout: LinearLayout
+    private lateinit var cartItemsTitle: TextView
+    private lateinit var buyNowButton: Button
+    private lateinit var cancelButton: Button
 
     private var createTime: Long = 0L
     private var totalItems: Int = 0
@@ -47,11 +47,6 @@ class CartFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         createTime = System.currentTimeMillis()
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-
     }
 
     override fun onStart() {
@@ -78,7 +73,7 @@ class CartFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity()).get(CartViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity())[CartViewModel::class.java]
         val cartItemsHolderRecyclerView =
             view.findViewById<RecyclerView>(R.id.cartItemsHolderRecycler)
         val layoutManager =
@@ -105,12 +100,12 @@ class CartFragment : Fragment() {
     }
 
     private fun cancelClicked() {
-        fragmentListener?.onFragmentAction(HomeProductsFragment.TAG)
+        fragmentListener?.onFragmentAction(homeTAG)
     }
 
     private fun buyNowClicked() {
         viewModel.removeAllItems()
-        fragmentListener?.onFragmentAction(HomeProductsFragment.TAG)
+        fragmentListener?.onFragmentAction(homeTAG)
     }
 
     private fun updateOtherUI() {
@@ -124,25 +119,4 @@ class CartFragment : Fragment() {
 
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CartFragment.
-         */
-        const val TAG = "CART"
-
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            CartFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
 }

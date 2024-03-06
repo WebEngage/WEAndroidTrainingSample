@@ -1,4 +1,4 @@
-package com.webengage.demo.shopping
+package com.webengage.demo.shopping.view.cart
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -8,6 +8,8 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.webengage.demo.shopping.view.home.Product
+import com.webengage.demo.shopping.R
 
 class CartRecyclerAdapter(
     private var itemList: List<Product>,

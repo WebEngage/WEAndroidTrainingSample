@@ -1,8 +1,9 @@
-package com.webengage.demo.shopping
+package com.webengage.demo.shopping.view.cart
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.webengage.demo.shopping.view.home.Product
 
 class CartViewModel : ViewModel() {
     private val itemList = MutableLiveData<List<Product>>()
