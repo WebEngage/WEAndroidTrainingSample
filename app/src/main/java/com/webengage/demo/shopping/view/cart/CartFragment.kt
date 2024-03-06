@@ -15,10 +15,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.webengage.demo.shopping.Constants.homeTAG
 import com.webengage.demo.shopping.FragmentListener
-import com.webengage.demo.shopping.view.home.HomeProductsFragment
 import com.webengage.demo.shopping.view.home.Product
 import com.webengage.demo.shopping.R
-import com.webengage.sdk.android.WebEngage
 
 
 /**

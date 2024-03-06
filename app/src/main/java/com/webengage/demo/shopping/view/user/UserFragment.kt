@@ -14,8 +14,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.textfield.TextInputEditText
 import com.webengage.demo.shopping.R
 import com.webengage.demo.shopping.SharedPrefsManager
-import com.webengage.sdk.android.WebEngage
-import com.webengage.sdk.android.utils.Gender
+
 
 /**
  * A simple [Fragment] subclass.
@@ -24,7 +23,6 @@ import com.webengage.sdk.android.utils.Gender
  */
 class UserFragment : Fragment() {
 
-    val weUser = WebEngage.get().user()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,23 +43,8 @@ class UserFragment : Fragment() {
     }
 
     private fun updateUserAttributes() {
-        weUser.setFirstName("John");
-        weUser.setLastName("Doe");
-        weUser.setCompany("Alphabet Inc.");
-        weUser.setEmail("john@doe.com");
-        weUser.setHashedEmail("144e0424883546e07dcd727057fd3b62");
-        weUser.setBirthDate("1986-08-19");
-        weUser.setPhoneNumber("+551155256325");
-        weUser.setGender(Gender.MALE);
         val latitude = 19.0822
         val longitude = 72.8417
-        weUser.setLocation(latitude, longitude)
-
-
-        // Custom Attribute
-        weUser.setAttribute("Age", 31);
-
-
     }
 
     override fun onCreateView(
@@ -92,7 +75,6 @@ class UserFragment : Fragment() {
             if (isValidCredentials(userName, password)) {
                 hideLoginElements()
                 welcomeUser(userName, usernameTextView)
-                WebEngage.get().user().login(userName)
                 updateUserAttributes()
                 SharedPrefsManager.putString(SharedPrefsManager.USERNAME, userName)
             } else {

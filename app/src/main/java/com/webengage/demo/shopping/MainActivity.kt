@@ -15,7 +15,6 @@ import com.webengage.demo.shopping.Constants.userTAG
 import com.webengage.demo.shopping.view.cart.CartFragment
 import com.webengage.demo.shopping.view.home.HomeProductsFragment
 import com.webengage.demo.shopping.view.user.UserFragment
-import com.webengage.sdk.android.WebEngage
 
 class MainActivity : AppCompatActivity(), FragmentListener {
 
@@ -23,7 +22,6 @@ class MainActivity : AppCompatActivity(), FragmentListener {
     private val userFragment = UserFragment()
     private val cartFragment = CartFragment()
     private lateinit var bottomNavigationView: BottomNavigationView
-    private val weAnalytics = WebEngage.get().analytics()
 
     private val bottomNavigationSelectedListener =
         NavigationBarView.OnItemSelectedListener { item ->
@@ -80,7 +78,6 @@ class MainActivity : AppCompatActivity(), FragmentListener {
         }
 
         fragmentTransaction.commit()
-        weAnalytics.screenNavigated(screenName)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
