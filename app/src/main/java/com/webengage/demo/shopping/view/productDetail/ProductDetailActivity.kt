@@ -1,4 +1,4 @@
-package com.webengage.demo.shopping
+package com.webengage.demo.shopping.view.productDetail
 
 import android.app.Activity
 import android.content.Intent
@@ -8,7 +8,8 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.webengage.sdk.android.Logger
+import com.webengage.demo.shopping.R
+import com.webengage.demo.shopping.view.home.Product
 import com.webengage.sdk.android.WebEngage
 
 class ProductDetailActivity : AppCompatActivity() {
