@@ -2,6 +2,7 @@ package com.webengage.demo.shopping
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import com.webengage.personalization.WEPersonalization
 import com.webengage.personalization.callbacks.WECampaignCallback
 import com.webengage.personalization.data.WECampaignData
@@ -15,6 +16,7 @@ class ShoppingApplication : Application(), WECampaignCallback {
         mContext = this.applicationContext
         initWebEngage()
         WEPersonalization.get().init()
+        WEPersonalization.get().registerWECampaignCallback(this)
     }
 
     private fun initWebEngage() {

@@ -58,7 +58,7 @@ class HomeProductsFragment : Fragment(), WEPlaceholderCallback, WECampaignCallba
 
     override fun onStart() {
         super.onStart()
-        WEPersonalization.get().registerWEPlaceholderCallback("we_placeholder_home", this)
+        WEPersonalization.get().registerWEPlaceholderCallback("we_plceholder_home", this)
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -95,6 +95,10 @@ class HomeProductsFragment : Fragment(), WEPlaceholderCallback, WECampaignCallba
             categoryView.id = Random.nextInt()
             val title = categoryView.findViewById<TextView>(R.id.tv_title)
             title.text = category.title
+            var products = category.products
+            if (category.title == "Electronics") {
+                products.add(2, Product("", "", "","campaign"))
+            }
             createProductList(category, categoryView)
         }
     }

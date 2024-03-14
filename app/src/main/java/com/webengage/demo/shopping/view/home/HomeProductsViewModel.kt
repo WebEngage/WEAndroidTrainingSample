@@ -40,7 +40,7 @@ class HomeProductsViewModel : ViewModel() {
                 val productTitle = productObject.getString("title")
                 val price = productObject.getString("price")
 
-                val product = Product(image, productTitle, price)
+                val product = Product(image, productTitle, price, "")
                 products.add(product)
                 clickedProduct = product
             }

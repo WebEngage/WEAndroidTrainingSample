@@ -1,34 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="200dp"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
+    android:layout_height="200dp"
     android:elevation="5dp"
     android:padding="5dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardUseCompatPadding="true"
-    app:cardCornerRadius="10dp">
+    app:cardCornerRadius="10dp"
+    app:cardUseCompatPadding="true">
 
-    <ImageView
-        android:id="@+id/productIconImageView"
-        android:layout_width="150dp"
-        android:layout_height="200dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/headphone" />
+    <FrameLayout
+        android:id="@+id/product_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/productShortDescTextView"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="#66000000"
-        android:gravity="center"
-        android:maxLines="2"
-        android:padding="5dp"
-        android:text="Product Details and Description text goes here wjich will be set Dynamicall"
-        android:textColor="#FFFFFF"
-        style="@style/SecondaryText"
-        />
+        <ImageView
+            android:id="@+id/productIconImageView"
+            android:layout_width="150dp"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/headphone" />
+
+        <TextView
+            android:id="@+id/productShortDescTextView"
+            style="@style/SecondaryText"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="#66000000"
+            android:gravity="center"
+            android:maxLines="2"
+            android:padding="5dp"
+            android:text="Product Details and Description text goes here wjich will be set Dynamicall"
+            android:textColor="#FFFFFF" />
+    </FrameLayout>
+
+    <com.webengage.personalization.WEInlineView
+        android:id="@+id/product_campaign"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 
 </androidx.cardview.widget.CardView>

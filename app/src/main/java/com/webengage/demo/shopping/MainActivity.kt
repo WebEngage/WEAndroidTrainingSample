@@ -3,6 +3,7 @@ package com.webengage.demo.shopping
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.WindowInsets
 import androidx.appcompat.app.AppCompatActivity
@@ -15,9 +16,11 @@ import com.webengage.demo.shopping.Constants.userTAG
 import com.webengage.demo.shopping.view.cart.CartFragment
 import com.webengage.demo.shopping.view.home.HomeProductsFragment
 import com.webengage.demo.shopping.view.user.UserFragment
+import com.webengage.personalization.callbacks.WECampaignCallback
+import com.webengage.personalization.data.WECampaignData
 import com.webengage.sdk.android.WebEngage
 
-class MainActivity : AppCompatActivity(), FragmentListener {
+class MainActivity : AppCompatActivity(), FragmentListener, WECampaignCallback {
 
     private val homeFragment = HomeProductsFragment()
     private val userFragment = UserFragment()
@@ -100,5 +103,25 @@ class MainActivity : AppCompatActivity(), FragmentListener {
         if (actionType == (homeTAG)) {
             loadFragment(actionType, "HomeScreen")
         }
+    }
+
+    override fun onCampaignClicked(
+        actionId: String,
+        deepLink: String,
+        data: WECampaignData
+    ): Boolean {
+        Log.d("TAG", "onCampaignClicked: ")
+        return false
+    }
+
+    override fun onCampaignException(campaignId: String?, targetViewId: String, error: Exception) {
+    }
+
+    override fun onCampaignPrepared(data: WECampaignData): WECampaignData? {
+        return data
+    }
+
+    override fun onCampaignShown(data: WECampaignData) {
+
     }
 }
