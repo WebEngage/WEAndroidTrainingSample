@@ -1,26 +1,21 @@
 package com.webengage.demo.shopping
 
 import android.app.Application
-import android.app.NotificationManager
 import android.content.Context
 import android.util.Log
+import com.google.firebase.messaging.FirebaseMessaging
 import com.webengage.personalization.WEPersonalization
 import com.webengage.personalization.callbacks.WECampaignCallback
 import com.webengage.personalization.data.WECampaignData
 import com.webengage.sdk.android.WebEngage
-import android.graphics.Color
-import android.util.Log
-import com.google.firebase.messaging.FirebaseMessaging
-import com.webengage.sdk.android.PushChannelConfiguration
-import com.webengage.sdk.android.WebEngage
 import com.webengage.sdk.android.WebEngageActivityLifeCycleCallbacks
 import com.webengage.sdk.android.WebEngageConfig
 import com.webengage.sdk.android.actions.render.InAppNotificationData
+import com.webengage.sdk.android.actions.render.PushNotificationData
 import com.webengage.sdk.android.callbacks.InAppNotificationCallbacks
+import com.webengage.sdk.android.callbacks.PushNotificationCallbacks
 import org.json.JSONException
 import org.json.JSONObject
-import com.webengage.sdk.android.actions.render.PushNotificationData
-import com.webengage.sdk.android.callbacks.PushNotificationCallbacks
 
 class ShoppingApplication : Application(), PushNotificationCallbacks, WECampaignCallback , InAppNotificationCallbacks {
     private var mContext: Context? = null
