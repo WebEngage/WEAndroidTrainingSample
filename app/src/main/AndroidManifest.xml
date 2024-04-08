@@ -12,6 +12,8 @@
             <data android:scheme="https" />
         </intent>
     </queries>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:name=".ShoppingApplication"
         android:icon="@mipmap/ic_launcher"
@@ -36,6 +38,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service android:exported="false"
+            android:name=".fcm.MyFirebaseService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
         <meta-data android:name="com.webengage.sdk.android.environment" android:value="us" />
     </application>
 
