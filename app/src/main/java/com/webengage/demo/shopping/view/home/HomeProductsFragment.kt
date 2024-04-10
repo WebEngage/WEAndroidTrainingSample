@@ -16,9 +16,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.webengage.demo.shopping.Constants
 import com.webengage.demo.shopping.view.cart.CartViewModel
 import com.webengage.demo.shopping.view.productDetail.ProductDetailActivity
 import com.webengage.demo.shopping.R
+import com.webengage.demo.shopping.SharedPrefsManager
+import com.webengage.demo.shopping.ShoppingApplication
 import com.webengage.personalization.WEPersonalization
 import com.webengage.personalization.callbacks.WECampaignCallback
 import com.webengage.personalization.callbacks.WEPlaceholderCallback
@@ -37,6 +40,7 @@ class HomeProductsFragment : Fragment(), WEPlaceholderCallback, WECampaignCallba
     private lateinit var viewModel: HomeProductsViewModel
     private lateinit var parentView: View
     private lateinit var productDetailActivityResultLauncher: ActivityResultLauncher<Intent>
+    private var mSharedPrefsManager: SharedPrefsManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,6 +83,13 @@ class HomeProductsFragment : Fragment(), WEPlaceholderCallback, WECampaignCallba
         viewModel.getProductsData().observe(viewLifecycleOwner, Observer {
             initView(it)
         })
+        mSharedPrefsManager = SharedPrefsManager.get()
+        if(mSharedPrefsManager!!.contains(Constants.JSON_URL)) {
+            ShoppingApplication.getAppContext()?.let { viewModel.setProducts(it,mSharedPrefsManager!!.getString(Constants.JSON_URL,"")) }
+        } else {
+            ShoppingApplication.getAppContext()?.let { viewModel.setProducts(it,"") }
+        }
+
         clickedProduct = viewModel.fetchProducts()!!
         listenForCartUpdate()
     }
@@ -171,4 +182,5 @@ class HomeProductsFragment : Fragment(), WEPlaceholderCallback, WECampaignCallba
     override fun onCampaignShown(data: WECampaignData) {
 
     }
+
 }

@@ -9,7 +9,6 @@ import com.webengage.personalization.callbacks.WECampaignCallback
 import com.webengage.personalization.data.WECampaignData
 import com.webengage.sdk.android.WebEngage
 import com.webengage.sdk.android.WebEngageActivityLifeCycleCallbacks
-import com.webengage.sdk.android.WebEngageConfig
 import com.webengage.sdk.android.actions.render.InAppNotificationData
 import com.webengage.sdk.android.actions.render.PushNotificationData
 import com.webengage.sdk.android.callbacks.InAppNotificationCallbacks
@@ -17,11 +16,15 @@ import com.webengage.sdk.android.callbacks.PushNotificationCallbacks
 import org.json.JSONException
 import org.json.JSONObject
 
-class ShoppingApplication : Application(), PushNotificationCallbacks, WECampaignCallback , InAppNotificationCallbacks {
-    private var mContext: Context? = null
+class ShoppingApplication : Application(), PushNotificationCallbacks, WECampaignCallback,
+    InAppNotificationCallbacks {
+
+
+    private var mSharedPrefsManager: SharedPrefsManager? = null
     override fun onCreate() {
         super.onCreate()
         mContext = this.applicationContext
+//        initSharedPrefs()
         initWebEngage()
         passFCMTokenToWE()
         WebEngage.registerPushNotificationCallback(this)
@@ -30,19 +33,57 @@ class ShoppingApplication : Application(), PushNotificationCallbacks, WECampaign
         WebEngage.registerInAppNotificationCallback(this)
     }
 
+    private fun initSharedPrefs() {
+        mSharedPrefsManager = SharedPrefsManager.get()
+    }
+
     private fun initWebEngage() {
-        val webEngageConfig = WebEngageConfig.Builder()
-            .setPushSmallIcon(R.mipmap.ic_launcher)
-            .setPushLargeIcon(R.mipmap.ic_launcher_round)
-            .setWebEngageKey("WEBENGAGE_KEY")
-            .setDebugMode(true) // only in development mode
-            .build()
-        registerActivityLifecycleCallbacks(
-            WebEngageActivityLifeCycleCallbacks(
-                this,
-                webEngageConfig
+
+        mSharedPrefsManager = SharedPrefsManager.get()
+        //WebEngageManager.hackyOverrideEngage("~13410522d", "us");
+        mSharedPrefsManager!!.put(Constants.WEBENGAGE_ENGAGED, false)
+        mSharedPrefsManager!!.put(Constants.ACTIVITY_LIFECYCLE_REGISTERED, false)
+
+
+        val licenseCode: String = mSharedPrefsManager!!.getString(Constants.LICENSE_CODE, "")
+        if (!Utils.isBlank(licenseCode)) {
+            Log.d(Constants.TAG, "license code: $licenseCode")
+            WebEngageManager.registerCallbacks()
+            val webEngageConfig = WebEngageManager.buildWebEngageConfig(licenseCode)
+            (getAppContext() as ShoppingApplication).registerActivityLifecycleCallbacks(
+                WebEngageActivityLifeCycleCallbacks(mContext, webEngageConfig)
             )
-        )
+            //WebEngageManager.engage(mContext, webEngageConfig);
+            WebEngageManager.setPushToken()
+            val cuid: String = mSharedPrefsManager!!.getString(Constants.CUID, "")
+            if (!Utils.isBlank(cuid)) {
+                WebEngage.get().user().login(cuid, null)
+            }
+            mSharedPrefsManager!!.put(Constants.LICENSE_CODE, licenseCode)
+            mSharedPrefsManager!!.put(Constants.ACTIVITY_LIFECYCLE_REGISTERED, true)
+            mSharedPrefsManager!!.put(Constants.WEBENGAGE_ENGAGED, true)
+        }
+
+
+        var isMinified = false
+        try {
+            Class.forName("com.webengage.sdk.android.YetAnotherIntentServiceConnection")
+        } catch (e: java.lang.Exception) {
+            isMinified = true
+        }
+        mSharedPrefsManager!!.put(Constants.SDK_MINIFIED, isMinified)
+//        val webEngageConfig = WebEngageConfig.Builder()
+//            .setPushSmallIcon(R.mipmap.ic_launcher)
+//            .setPushLargeIcon(R.mipmap.ic_launcher_round)
+//            .setWebEngageKey("WEBENGAGE_KEY")
+//            .setDebugMode(true) // only in development mode
+//            .build()
+//        registerActivityLifecycleCallbacks(
+//            WebEngageActivityLifeCycleCallbacks(
+//                this,
+//                webEngageConfig
+//            )
+//        )
     }
 
     private fun passFCMTokenToWE() {
@@ -54,10 +95,6 @@ class ShoppingApplication : Application(), PushNotificationCallbacks, WECampaign
                 e.printStackTrace()
             }
         }
-    }
-
-    fun getAppContext(): Context? {
-        return mContext
     }
 
     override fun onCampaignClicked(
@@ -98,7 +135,10 @@ class ShoppingApplication : Application(), PushNotificationCallbacks, WECampaign
     ): Boolean {
         Log.d("TAG", "Inapp callback onInAppNotificationClicked: $inAppNotificationData ")
         val jsonObject: JSONObject = inAppNotificationData.getData()
-        Log.d("", "Inapp callback > onInAppNotificationClicked() > notification data json object: " + jsonObject.toString())
+        Log.d(
+            "",
+            "Inapp callback > onInAppNotificationClicked() > notification data json object: " + jsonObject.toString()
+        )
         try {
             val actions =
                 if (jsonObject.isNull("actions")) null else jsonObject.getJSONArray("actions")
@@ -139,7 +179,10 @@ class ShoppingApplication : Application(), PushNotificationCallbacks, WECampaign
     }
 
     override fun onPushNotificationClicked(p0: Context?, p1: PushNotificationData): Boolean {
-        Log.d("TAG", "onPushNotificationClicked: ${p1.pushPayloadJSON} ${p1.primeCallToAction.action}")
+        Log.d(
+            "TAG",
+            "onPushNotificationClicked: ${p1.pushPayloadJSON} ${p1.primeCallToAction.action}"
+        )
         return false
     }
 
@@ -152,7 +195,17 @@ class ShoppingApplication : Application(), PushNotificationCallbacks, WECampaign
         p1: PushNotificationData,
         p2: String?
     ): Boolean {
-        Log.d("TAG", "onPushNotificationActionClicked: button/action: $p2 link: ${p1.getCallToActionById(p2)} ")
+        Log.d(
+            "TAG",
+            "onPushNotificationActionClicked: button/action: $p2 link: ${p1.getCallToActionById(p2)} "
+        )
         return false
+    }
+
+    companion object {
+        private var mContext: Context? = null
+        fun getAppContext(): Context? {
+            return this.mContext
+        }
     }
 }

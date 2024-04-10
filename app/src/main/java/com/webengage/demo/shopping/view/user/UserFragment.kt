@@ -25,6 +25,7 @@ import com.webengage.sdk.android.utils.Gender
 class UserFragment : Fragment() {
 
     val weUser = WebEngage.get().user()
+    private var mSharedPrefsManager: SharedPrefsManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +34,7 @@ class UserFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        val storedUSerName = SharedPrefsManager.getString(SharedPrefsManager.USERNAME, "")
+        val storedUSerName = mSharedPrefsManager!!.getString(SharedPrefsManager.USERNAME, "")
         val data = mutableMapOf<String, Any>()
 
         if (TextUtils.isEmpty(storedUSerName)) {
@@ -68,8 +69,8 @@ class UserFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        SharedPrefsManager.get(activity?.applicationContext!!)
-        val storedUSerName = SharedPrefsManager.getString(SharedPrefsManager.USERNAME, "")
+        mSharedPrefsManager = SharedPrefsManager.get()
+        val storedUSerName = mSharedPrefsManager!!.getString(SharedPrefsManager.USERNAME, "")
 
         val view = inflater.inflate(R.layout.fragment_user, container, false)
 
@@ -94,7 +95,7 @@ class UserFragment : Fragment() {
                 welcomeUser(userName, usernameTextView)
                 WebEngage.get().user().login(userName)
                 updateUserAttributes()
-                SharedPrefsManager.putString(SharedPrefsManager.USERNAME, userName)
+                mSharedPrefsManager!!.put(SharedPrefsManager.USERNAME, userName)
             } else {
                 // Display an error message or handle failed login
                 //show error
@@ -110,7 +111,7 @@ class UserFragment : Fragment() {
             val userName = usernameEditText.text.toString()
             val password = passwordEditText.text.toString()
             // Perform login/authentication logic here
-            SharedPrefsManager.putString(SharedPrefsManager.USERNAME, "")
+            mSharedPrefsManager!!.put(SharedPrefsManager.USERNAME, "")
             showLoginElements()
         }
         return view
@@ -119,7 +120,7 @@ class UserFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val storedUSerName = SharedPrefsManager.getString(SharedPrefsManager.USERNAME, "")
+        val storedUSerName = mSharedPrefsManager!!.getString(SharedPrefsManager.USERNAME, "")
         val usernameTextView = view.findViewById<TextView>(R.id.usernameTextView)
         if (TextUtils.isEmpty(storedUSerName)) {
             showLoginElements()

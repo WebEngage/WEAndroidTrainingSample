@@ -43,4 +43,13 @@
         <!-- You can include more specific styles for the content inside the card if needed -->
     </style>
 
+    <style name="EditTextStyle">
+        <item name="android:layout_width">@dimen/edittext_width</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textSize">@dimen/edittext_text_size</item>
+        <item name="android:inputType">text</item>
+        <item name="android:imeOptions">actionDone</item>
+    </style>
+
 </resources>

@@ -1,0 +1,77 @@
+[
+    {
+        "title": "Electronics",
+        "products": [
+            {
+                "image": "smartphone",
+                "title": "Smartphone X",
+                "price": "799.99₹"
+            },
+            {
+                "image": "laptop",
+                "title": "Laptop Pro",
+                "price": "1299.99₹"
+            },
+            {
+                "image": "headphone",
+                "title": "Wireless Headphones",
+                "price": "149.99₹"
+            },
+            {
+                "image": "tv",
+                "title": "4K Smart TV",
+                "price": "599.99₹"
+            }
+        ]
+    },
+    {
+        "title": "Clothing",
+        "products": [
+            {
+                "image": "denim",
+                "title": "Men's Denim Jeans",
+                "price": "49.99₹"
+            },
+            {
+                "image": "casual",
+                "title": "Women's Casual Dress",
+                "price": "39.99₹"
+            },
+            {
+                "image": "hoodie",
+                "title": "Kids' Hoodie",
+                "price": "29.99₹"
+            },
+            {
+                "image": "shoes",
+                "title": "Sports Shoes",
+                "price": "69.99₹"
+            }
+        ]
+    },
+    {
+        "title": "Home and Garden",
+        "products": [
+            {
+                "image": "sofaset",
+                "title": "Sofa Set",
+                "price": "799.99₹"
+            },
+            {
+                "image": "kitchen",
+                "title": "Kitchen Appliances",
+                "price": "299.99₹"
+            },
+            {
+                "image": "garden",
+                "title": "Garden Tools",
+                "price": "59.99₹"
+            },
+            {
+                "image": "bedding",
+                "title": "Bedding Set",
+                "price": "99.99₹"
+            }
+        ]
+    }
+]
