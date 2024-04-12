@@ -24,7 +24,7 @@ class ShoppingApplication : Application(), PushNotificationCallbacks, WECampaign
     override fun onCreate() {
         super.onCreate()
         mContext = this.applicationContext
-//        initSharedPrefs()
+        initSharedPrefs()
         initWebEngage()
         passFCMTokenToWE()
         WebEngage.registerPushNotificationCallback(this)
@@ -38,13 +38,7 @@ class ShoppingApplication : Application(), PushNotificationCallbacks, WECampaign
     }
 
     private fun initWebEngage() {
-
-        mSharedPrefsManager = SharedPrefsManager.get()
-        //WebEngageManager.hackyOverrideEngage("~13410522d", "us");
         mSharedPrefsManager!!.put(Constants.WEBENGAGE_ENGAGED, false)
-        mSharedPrefsManager!!.put(Constants.ACTIVITY_LIFECYCLE_REGISTERED, false)
-
-
         val licenseCode: String = mSharedPrefsManager!!.getString(Constants.LICENSE_CODE, "")
         if (!Utils.isBlank(licenseCode)) {
             Log.d(Constants.TAG, "license code: $licenseCode")
@@ -60,30 +54,9 @@ class ShoppingApplication : Application(), PushNotificationCallbacks, WECampaign
                 WebEngage.get().user().login(cuid, null)
             }
             mSharedPrefsManager!!.put(Constants.LICENSE_CODE, licenseCode)
-            mSharedPrefsManager!!.put(Constants.ACTIVITY_LIFECYCLE_REGISTERED, true)
             mSharedPrefsManager!!.put(Constants.WEBENGAGE_ENGAGED, true)
         }
 
-
-        var isMinified = false
-        try {
-            Class.forName("com.webengage.sdk.android.YetAnotherIntentServiceConnection")
-        } catch (e: java.lang.Exception) {
-            isMinified = true
-        }
-        mSharedPrefsManager!!.put(Constants.SDK_MINIFIED, isMinified)
-//        val webEngageConfig = WebEngageConfig.Builder()
-//            .setPushSmallIcon(R.mipmap.ic_launcher)
-//            .setPushLargeIcon(R.mipmap.ic_launcher_round)
-//            .setWebEngageKey("WEBENGAGE_KEY")
-//            .setDebugMode(true) // only in development mode
-//            .build()
-//        registerActivityLifecycleCallbacks(
-//            WebEngageActivityLifeCycleCallbacks(
-//                this,
-//                webEngageConfig
-//            )
-//        )
     }
 
     private fun passFCMTokenToWE() {

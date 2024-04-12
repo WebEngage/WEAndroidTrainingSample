@@ -30,13 +30,12 @@ class LicenseActivity : AppCompatActivity() {
     private fun initData() {
         mSharedPrefsManager = SharedPrefsManager.get()
         if (mSharedPrefsManager!!.getBoolean(Constants.WEBENGAGE_ENGAGED, false)) {
-            val cuid: String = mSharedPrefsManager!!.getString(Constants.CUID, "")
             goToHome()
             finish()
         } else {
             mLicense = mSharedPrefsManager!!.getString(
                 Constants.LICENSE_CODE,
-                Constants.DEFAULT_LICENSE_CODE
+                ""
             )
         }
     }
@@ -56,7 +55,6 @@ class LicenseActivity : AppCompatActivity() {
                 mSharedPrefsManager!!.put(Constants.JSON_URL,jsonUrl)
             }
             if (mLicense.isNotEmpty()) {
-                saveEnvironment(mLicense)
                 saveLicenseCode(mLicense)
                 get().init()
                 engage()
@@ -72,16 +70,6 @@ class LicenseActivity : AppCompatActivity() {
         }
     }
 
-    private fun saveEnvironment(licenseCode : String) {
-        if(licenseCode.startsWith("in")) {
-            mSharedPrefsManager!!.put(Constants.ENVIRONMENT, "in")
-        } else if(licenseCode.startsWith("gce")) {
-            mSharedPrefsManager!!.put(Constants.ENVIRONMENT, "gce")
-        } else {
-            mSharedPrefsManager!!.put(Constants.ENVIRONMENT, "aws")
-        }
-    }
-
     private fun saveLicenseCode(license: String) {
         mSharedPrefsManager!!.put(Constants.LICENSE_CODE, license)
     }
@@ -94,7 +82,6 @@ class LicenseActivity : AppCompatActivity() {
         WebEngage.engage(this, webEngageConfig)
         mSharedPrefsManager!!.put(Constants.WEBENGAGE_ENGAGED, true)
         WebEngageManager.registerCallbacks()
-//        saveConfig()
     }
 
     private fun goToHome() {

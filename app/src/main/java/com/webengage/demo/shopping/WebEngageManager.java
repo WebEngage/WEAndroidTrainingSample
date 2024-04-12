@@ -10,10 +10,13 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.webengage.personalization.callbacks.WECampaignCallback;
+import com.webengage.personalization.data.WECampaignData;
 import com.webengage.sdk.android.LocationTrackingStrategy;
 import com.webengage.sdk.android.PushChannelConfiguration;
 import com.webengage.sdk.android.WebEngage;
@@ -28,11 +31,12 @@ import com.webengage.sdk.android.callbacks.LifeCycleCallbacks;
 import com.webengage.sdk.android.callbacks.PushNotificationCallbacks;
 import com.webengage.sdk.android.callbacks.StateChangeCallbacks;
 import com.webengage.sdk.android.callbacks.WESecurityCallback;
+import com.webengage.personalization.WEPersonalization;
 
 import java.lang.reflect.Method;
 import java.util.Map;
 
-public class WebEngageManager extends StateChangeCallbacks implements LifeCycleCallbacks, PushNotificationCallbacks, InAppNotificationCallbacks, CustomPushRender, CustomPushRerender, WESecurityCallback {
+public class WebEngageManager extends StateChangeCallbacks implements LifeCycleCallbacks, PushNotificationCallbacks, InAppNotificationCallbacks, CustomPushRender, CustomPushRerender, WESecurityCallback, WECampaignCallback {
 
 
     public static WebEngageConfig buildWebEngageConfig(String license) {
@@ -53,8 +57,6 @@ public class WebEngageManager extends StateChangeCallbacks implements LifeCycleC
                 .setNotificationChannelShowBadge(true)
                 .build();
 
-        SharedPrefsManager sharedPrefsManager = SharedPrefsManager.get();
-
         WebEngageConfig.Builder builder = new WebEngageConfig.Builder()
                 .setWebEngageKey(license)
                 .setDebugMode(true)
@@ -69,19 +71,6 @@ public class WebEngageManager extends StateChangeCallbacks implements LifeCycleC
                 .setDefaultPushChannelConfiguration(pushChannelConfiguration)  // works only on devices >= oreo
                 .setAutoGAIDTracking(false);
 
-        String env = sharedPrefsManager.getString(Constants.ENVIRONMENT, "aws");
-
-        if (!env.equals("none")) {
-            try {
-                Class<?> clazz = builder.getClass();
-                Method method = clazz.getDeclaredMethod("setEnvironment", String.class);
-                method.setAccessible(true);
-                builder = (WebEngageConfig.Builder) method.invoke(builder, env);
-            } catch (Exception e) {
-                Log.e(Constants.TAG,"Could not set environment", e);
-            }
-        }
-
         return builder.build();
     }
 
@@ -93,6 +82,8 @@ public class WebEngageManager extends StateChangeCallbacks implements LifeCycleC
         WebEngage.registerCustomPushRenderCallback(new WebEngageManager());
         WebEngage.registerCustomPushRerenderCallback(new WebEngageManager());
         WebEngage.registerWESecurityCallback(new WebEngageManager());
+        WEPersonalization.Companion.get().init();
+        WEPersonalization.Companion.get().registerWECampaignCallback(new WebEngageManager());
     }
 
     public static void setPushToken() {
@@ -201,6 +192,27 @@ public class WebEngageManager extends StateChangeCallbacks implements LifeCycleC
 
     @Override
     public void onSecurityException(Map<String, Object> map) {
+
+    }
+
+    @Override
+    public void onCampaignException(@Nullable String s, @NonNull String s1, @NonNull Exception e) {
+
+    }
+
+    @Override
+    public boolean onCampaignClicked(@NonNull String s, @NonNull String s1, @NonNull WECampaignData weCampaignData) {
+        return false;
+    }
+
+    @Nullable
+    @Override
+    public WECampaignData onCampaignPrepared(@NonNull WECampaignData weCampaignData) {
+        return weCampaignData;
+    }
+
+    @Override
+    public void onCampaignShown(@NonNull WECampaignData weCampaignData) {
 
     }
 }
