@@ -12,9 +12,11 @@ import androidx.core.view.ViewCompat
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
 import com.webengage.demo.shopping.Constants.cartTAG
+import com.webengage.demo.shopping.Constants.demoTAG
 import com.webengage.demo.shopping.Constants.homeTAG
 import com.webengage.demo.shopping.Constants.userTAG
 import com.webengage.demo.shopping.view.cart.CartFragment
+import com.webengage.demo.shopping.view.demo.DemoFragment
 import com.webengage.demo.shopping.view.home.HomeProductsFragment
 import com.webengage.demo.shopping.view.user.UserFragment
 import com.webengage.personalization.callbacks.WECampaignCallback
@@ -26,6 +28,7 @@ class MainActivity : AppCompatActivity(), FragmentListener, WECampaignCallback {
     private val homeFragment = HomeProductsFragment()
     private val userFragment = UserFragment()
     private val cartFragment = CartFragment()
+    private val demoFragment = DemoFragment()
     private lateinit var bottomNavigationView: BottomNavigationView
     private val PUSH_NOTIFICATIONS =
         "android.permission.POST_NOTIFICATIONS" //Applicable from Android 13 and above
@@ -45,6 +48,10 @@ class MainActivity : AppCompatActivity(), FragmentListener, WECampaignCallback {
 
                 R.id.action_profile -> {
                     loadFragment(userTAG, "UserProfile")
+                }
+
+                R.id.action_demo -> {
+                    loadFragment(demoTAG, "DemoScreen")
                 }
             }
             true
@@ -119,6 +126,7 @@ class MainActivity : AppCompatActivity(), FragmentListener, WECampaignCallback {
                 homeTAG -> homeFragment
                 userTAG -> userFragment
                 cartTAG -> cartFragment
+                demoTAG -> demoFragment
                 else -> throw IllegalArgumentException("Unknown tag: $fragmentTag")
             }
             fragmentTransaction.add(R.id.fragment_container, newFragment, fragmentTag)

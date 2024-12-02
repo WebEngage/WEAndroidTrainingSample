@@ -4,6 +4,7 @@ object Constants {
      const val homeTAG = "HOME"
      const val userTAG = "USER"
      const val cartTAG = "CART"
+     const val demoTAG = "DEMO"
      const val WEBENGAGE_ENGAGED = "webengage_engaged"
      const val CUID = "username"
      const val LICENSE_CODE = "license_code"
