@@ -57,10 +57,10 @@
                 android:id="@+id/push_banner"/>
 
             <Button
-                android:text="Text"
+                android:text="Overlay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/push_text"/>
+                android:id="@+id/push_overlay"/>
 
 
 
@@ -111,7 +111,7 @@
                 android:id="@+id/inapp_nps"/>
 
             <Button
-                android:text="Scratch"
+                android:text="Scratch Card"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/inapp_scratch"/>

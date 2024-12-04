@@ -29,7 +29,7 @@ class DemoFragment : Fragment() {
         return view
     }
 
-    private fun trackEvent(eventName: String, view: View) {
+    private fun trackEvent(eventName: String) {
         val map: MutableMap<String, Any> = HashMap()
         val mClient: String = clientInput.text.toString().trim()
         if (!clientName.equals(mClient, false) && !TextUtils.isEmpty(mClient)) {
@@ -48,43 +48,49 @@ class DemoFragment : Fragment() {
 
         val mTimerButton = view.findViewById<Button>(R.id.push_timer).also {
             it.setOnClickListener({
-                trackEvent("Timer", view)
+                trackEvent("Timer")
             })
         }
 
         val mCarouselButton = view.findViewById<Button>(R.id.push_carousel).also {
             it.setOnClickListener({
-                trackEvent("Carousel", view)
+                trackEvent("Carousel")
             })
         }
 
         val mBannerButton = view.findViewById<Button>(R.id.push_banner).also {
             it.setOnClickListener({
-                trackEvent("Banner", view)
+                trackEvent("Banner")
+            })
+        }
+
+        val mOverlayButton = view.findViewById<Button>(R.id.push_overlay).also {
+            it.setOnClickListener({
+                trackEvent("Overlay")
             })
         }
 
         val mInappSpinTheWheel = view.findViewById<Button>(R.id.inapp_stw).also {
             it.setOnClickListener({
-                trackEvent("SpinTheWheel", view)
+                trackEvent("SpinTheWheel")
             })
         }
 
         val mInappScratchCard = view.findViewById<Button>(R.id.inapp_scratch).also {
             it.setOnClickListener({
-                trackEvent("ScratchCard", view)
+                trackEvent("ScratchCard")
             })
         }
 
         val mInappClassic = view.findViewById<Button>(R.id.inapp_cm).also {
             it.setOnClickListener({
-                trackEvent("ClassicModal", view)
+                trackEvent("ClassicModal")
             })
         }
 
         val mInappNPS = view.findViewById<Button>(R.id.inapp_nps).also {
             it.setOnClickListener({
-                trackEvent("NPS", view)
+                trackEvent("NPS")
             })
         }
 
