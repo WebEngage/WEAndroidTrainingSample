@@ -76,7 +76,7 @@ class LicenseActivity : AppCompatActivity() {
 
     private fun engage() {
         val webEngageConfig: WebEngageConfig = WebEngageManager.buildWebEngageConfig(mLicense)
-        (ShoppingApplication.getAppContext() as ShoppingApplication).registerActivityLifecycleCallbacks(
+        (application as ShoppingApplication).registerActivityLifecycleCallbacks(
             WebEngageActivityLifeCycleCallbacks(this, webEngageConfig)
         )
         WebEngage.engage(this, webEngageConfig)

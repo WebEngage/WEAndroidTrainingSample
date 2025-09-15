@@ -1,7 +1,12 @@
 package com.webengage.demo.shopping
 
 import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
+import android.media.AudioAttributes
+import android.net.Uri
+import android.os.Build
 import android.util.Log
 import com.google.firebase.messaging.FirebaseMessaging
 import com.webengage.personalization.WEPersonalization
@@ -31,6 +36,33 @@ class ShoppingApplication : Application(), PushNotificationCallbacks, WECampaign
         WEPersonalization.get().init()
         WEPersonalization.get().registerWECampaignCallback(this)
         WebEngage.registerInAppNotificationCallback(this)
+        createChannel("alert_meme", "alert_meme")
+        createChannel("emergency_alert", "emergency_alert")
+    }
+
+    // Creates custom channel with different sound set to each channel
+    // If you want to add new channel add the sound in the raw folder and then update same in when() in below method
+    private fun createChannel(channelName: String, soundName: String){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationChannel = NotificationChannel(channelName, channelName, NotificationManager.IMPORTANCE_DEFAULT)
+            val attributes = AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                .build()
+            val alertSound = when(soundName) {
+                "alert_meme" -> R.raw.alert_meme
+                "emergency_alert" -> R.raw.emergency_alert
+                else -> android.provider.Settings.System.DEFAULT_NOTIFICATION_URI
+            }
+
+            val uri = if (alertSound is Int) {
+                Uri.parse("android.resource://$packageName/$alertSound")
+            } else {
+                alertSound as Uri
+            }
+            notificationChannel.setSound(uri, attributes)
+            val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(notificationChannel)
+        }
     }
 
     private fun initSharedPrefs() {
@@ -44,7 +76,7 @@ class ShoppingApplication : Application(), PushNotificationCallbacks, WECampaign
             Log.d(Constants.TAG, "license code: $licenseCode")
             WebEngageManager.registerCallbacks()
             val webEngageConfig = WebEngageManager.buildWebEngageConfig(licenseCode)
-            (getAppContext() as ShoppingApplication).registerActivityLifecycleCallbacks(
+            this.registerActivityLifecycleCallbacks(
                 WebEngageActivityLifeCycleCallbacks(mContext, webEngageConfig)
             )
             //WebEngageManager.engage(mContext, webEngageConfig);
@@ -92,9 +124,9 @@ class ShoppingApplication : Application(), PushNotificationCallbacks, WECampaign
     override fun onInAppNotificationPrepared(
         p0: Context?,
         p1: InAppNotificationData?
-    ): InAppNotificationData {
+    ): InAppNotificationData? {
         Log.d("TAG", "Inapp callback onInAppNotificationPrepared: $p1")
-        return p1!!
+        return p1
     }
 
     override fun onInAppNotificationShown(p0: Context?, p1: InAppNotificationData?) {
@@ -141,10 +173,13 @@ class ShoppingApplication : Application(), PushNotificationCallbacks, WECampaign
 
     override fun onPushNotificationReceived(
         p0: Context?,
-        p1: PushNotificationData
+        pushData: PushNotificationData
     ): PushNotificationData {
-        Log.d("TAG", "onPushNotificationReceived: ${p1.pushPayloadJSON}")
-        return p1
+        Log.d("TAG", "onPushNotificationReceived: ${pushData.pushPayloadJSON}")
+        if(pushData != null && pushData.customData != null && !pushData.customData.getString("channel").isNullOrEmpty()) {
+            pushData.channelId = pushData.customData.getString("channel")
+        }
+        return pushData
     }
 
     override fun onPushNotificationShown(p0: Context?, p1: PushNotificationData) {
@@ -178,7 +213,7 @@ class ShoppingApplication : Application(), PushNotificationCallbacks, WECampaign
     companion object {
         private var mContext: Context? = null
         fun getAppContext(): Context? {
-            return this.mContext
+            return mContext
         }
     }
 }

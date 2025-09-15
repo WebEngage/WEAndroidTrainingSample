@@ -85,9 +85,9 @@ class HomeProductsFragment : Fragment(), WEPlaceholderCallback, WECampaignCallba
         })
         mSharedPrefsManager = SharedPrefsManager.get()
         if(mSharedPrefsManager!!.contains(Constants.JSON_URL)) {
-            ShoppingApplication.getAppContext()?.let { viewModel.setProducts(it,mSharedPrefsManager!!.getString(Constants.JSON_URL,"")) }
+            context?.let { viewModel.setProducts(it,mSharedPrefsManager!!.getString(Constants.JSON_URL,"")) }
         } else {
-            ShoppingApplication.getAppContext()?.let { viewModel.setProducts(it,"") }
+            context?.let { viewModel.setProducts(it,"") }
         }
 
         clickedProduct = viewModel.fetchProducts()!!

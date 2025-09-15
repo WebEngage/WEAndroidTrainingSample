@@ -1,11 +1,14 @@
 package com.webengage.demo.shopping
 
+import android.content.Context
 import android.widget.Toast
 
 object Utils {
 
     fun showToast(message: String?) {
-        Toast.makeText(ShoppingApplication.getAppContext(), message, Toast.LENGTH_LONG).show()
+        ShoppingApplication.getAppContext()?.let { context ->
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+        }
     }
 
     fun isBlank(str: String?): Boolean {
