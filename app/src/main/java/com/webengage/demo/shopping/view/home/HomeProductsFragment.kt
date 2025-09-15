@@ -85,9 +85,9 @@ class HomeProductsFragment : Fragment(), WEPlaceholderCallback, WECampaignCallba
         })
         mSharedPrefsManager = SharedPrefsManager.get()
         if(mSharedPrefsManager!!.contains(Constants.JSON_URL)) {
-            context?.let { viewModel.setProducts(it,mSharedPrefsManager!!.getString(Constants.JSON_URL,"")) }
+            ShoppingApplication.getAppContext()?.let { viewModel.setProducts(it,mSharedPrefsManager!!.getString(Constants.JSON_URL,"")) }
         } else {
-            context?.let { viewModel.setProducts(it,"") }
+            ShoppingApplication.getAppContext()?.let { viewModel.setProducts(it,"") }
         }
 
         clickedProduct = viewModel.fetchProducts()!!
@@ -108,7 +108,7 @@ class HomeProductsFragment : Fragment(), WEPlaceholderCallback, WECampaignCallba
             title.text = category.title
             var products = category.products
             if (category.title == "Electronics") {
-                products.add(2, Product("", "", "","campaign"))
+                products.add(2, Product("", "", "","campaign","",""))
             }
             createProductList(category, categoryView)
         }

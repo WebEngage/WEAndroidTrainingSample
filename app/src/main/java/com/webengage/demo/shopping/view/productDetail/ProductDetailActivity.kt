@@ -76,6 +76,12 @@ class ProductDetailActivity : AppCompatActivity() {
         if (product != null) {
             addedToCartAttributes["Title"] = product.title
             addedToCartAttributes["price"] = product.price
+            if(product.ott.isNotEmpty()) {
+                addedToCartAttributes["OTT"] = product.ott
+            }
+            if(product.channels.isNotEmpty()) {
+                addedToCartAttributes["Channels"] = product.channels
+            }
             weAnalytics.track("Added to Cart", addedToCartAttributes)
         }
         setResult(Activity.RESULT_OK, resultIntent)

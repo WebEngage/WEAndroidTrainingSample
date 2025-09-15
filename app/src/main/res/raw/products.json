@@ -73,5 +73,32 @@
                 "price": "99.99₹"
             }
         ]
+    },
+    {
+        "title": "Fiber Plans",
+        "products": [
+            {
+                "image": "lite",
+                "title": "Lite Fiber Plan",
+                "price": "1050.00₹",
+                "ott": "Any 4",
+                "channels": "200+"
+            },
+            {
+                "image": "mega",
+                "title": "Mega Fiber Plan",
+                "price": "1250.00",
+                "ott": "Any 6",
+                "channels": "200+"
+
+            },
+            {
+                "image": "prime",
+                "title": "Prime Fiber Plan",
+                "price": "1100.00₹",
+                "ott": "All",
+                "channels": "200+"
+            }
+        ]
     }
 ]

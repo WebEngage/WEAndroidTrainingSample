@@ -54,8 +54,11 @@ class HomeProductsViewModel : ViewModel() {
                     val image = productObject.getString("image")
                     val productTitle = productObject.getString("title")
                     val price = productObject.getString("price")
+                    val type = productObject.optString("type")
+                    val ott = productObject.optString("ott")
+                    val channels = productObject.optString("channels")
 
-                    val product = Product(image, productTitle, price, "")
+                    val product = Product(image, productTitle, price, type,ott,channels)
                     products.add(product)
                     clickedProduct = product
                 }

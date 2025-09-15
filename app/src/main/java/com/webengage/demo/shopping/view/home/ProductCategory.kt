@@ -9,5 +9,7 @@ data class Product(
     val image: String,
     val title: String,
     val price: String,
-    val type: String
+    val type: String,
+    val ott: String,
+    val channels: String
 ): Serializable
