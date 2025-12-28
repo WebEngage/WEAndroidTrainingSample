@@ -16,6 +16,7 @@ import com.webengage.demo.shopping.R
 import com.webengage.demo.shopping.SharedPrefsManager
 import com.webengage.sdk.android.WebEngage
 import com.webengage.sdk.android.utils.Gender
+import com.webengage.demo.shopping.view.InlineFragment
 
 /**
  * A simple [Fragment] subclass.
@@ -79,12 +80,21 @@ class UserFragment : Fragment() {
         val loginButton = view.findViewById<Button>(R.id.loginButton)
         val logoutButton = view.findViewById<Button>(R.id.logoutButton)
         val usernameTextView = view.findViewById<TextView>(R.id.usernameTextView)
+        val inlineButton = view.findViewById<Button>(R.id.inlineButton)
+        
         if (TextUtils.isEmpty(storedUSerName)) {
             showLoginElements()
             usernameTextView.visibility = View.GONE
         } else {
             welcomeUser(storedUSerName, usernameTextView)
             hideLoginElements()
+        }
+        
+        inlineButton.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, InlineFragment())
+                .addToBackStack(null)
+                .commit()
         }
         loginButton.setOnClickListener {
             val userName = usernameEditText.text.toString()
