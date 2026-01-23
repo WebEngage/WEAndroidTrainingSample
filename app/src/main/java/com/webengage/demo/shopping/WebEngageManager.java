@@ -66,6 +66,7 @@ public class WebEngageManager extends StateChangeCallbacks implements LifeCycleC
 //                .setPushAccentColor(Color.parseColor("#FF0000"))
 //                .setLocationTracking(true)
                 .setSessionDestroyTime(40)
+                .shouldEncryptUserStorage(true)
                 .setEventReportingStrategy(ReportingStrategy.FORCE_SYNC)
                 .setLocationTrackingStrategy(LocationTrackingStrategy.DISABLED)
                 .setDefaultPushChannelConfiguration(pushChannelConfiguration)  // works only on devices >= oreo
