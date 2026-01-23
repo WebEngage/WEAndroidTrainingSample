@@ -14,3 +14,7 @@
 .externalNativeBuild
 .cxx
 local.properties
+/app/google-services.json
+/.idea/gradle.xml
+/.idea/misc.xml
+/app/MyAppKeystore

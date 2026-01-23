@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp">
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/clientName"
+        android:hint="Client Name"
+        />
+
+    <androidx.cardview.widget.CardView
+        app:cardCornerRadius="8dp"
+        android:id="@+id/pushContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/clientName" >
+
+        <LinearLayout
+            android:gravity="center"
+            android:padding="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="Push"
+                style="@style/TextAppearance.Material3.HeadlineSmall"
+                android:layout_gravity="left"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                />
+            <Button
+                android:text="Timer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/push_timer"/>
+
+            <Button
+                android:text="Carousel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/push_carousel"/>
+
+            <Button
+                android:text="Banner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/push_banner"/>
+
+            <Button
+                android:text="Overlay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/push_overlay"/>
+
+
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        app:cardCornerRadius="8dp"
+        android:layout_marginTop="16dp"
+        android:id="@+id/inAppContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/pushContainer">
+
+        <LinearLayout
+            android:padding="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="InApp"
+                style="@style/TextAppearance.Material3.HeadlineSmall"
+                android:layout_gravity="start"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                />
+
+            <Button
+                android:text="Classic Modal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/inapp_cm"/>
+
+            <Button
+                android:text="Spin The Wheel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/inapp_stw"/>
+
+            <Button
+                android:text="NPS"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/inapp_nps"/>
+
+            <Button
+                android:text="Scratch Card"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/inapp_scratch"/>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

@@ -1,8 +1,10 @@
 package com.webengage.demo.shopping
 
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.WindowInsets
 import androidx.appcompat.app.AppCompatActivity
@@ -10,18 +12,28 @@ import androidx.core.view.ViewCompat
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
 import com.webengage.demo.shopping.Constants.cartTAG
+import com.webengage.demo.shopping.Constants.demoTAG
 import com.webengage.demo.shopping.Constants.homeTAG
 import com.webengage.demo.shopping.Constants.userTAG
 import com.webengage.demo.shopping.view.cart.CartFragment
+import com.webengage.demo.shopping.view.demo.DemoFragment
 import com.webengage.demo.shopping.view.home.HomeProductsFragment
 import com.webengage.demo.shopping.view.user.UserFragment
+import com.webengage.personalization.callbacks.WECampaignCallback
+import com.webengage.personalization.data.WECampaignData
+import com.webengage.sdk.android.WebEngage
 
-class MainActivity : AppCompatActivity(), FragmentListener {
+class MainActivity : AppCompatActivity(), FragmentListener, WECampaignCallback {
 
     private val homeFragment = HomeProductsFragment()
     private val userFragment = UserFragment()
     private val cartFragment = CartFragment()
+    private val demoFragment = DemoFragment()
     private lateinit var bottomNavigationView: BottomNavigationView
+    private val PUSH_NOTIFICATIONS =
+        "android.permission.POST_NOTIFICATIONS" //Applicable from Android 13 and above
+
+    private val weAnalytics = WebEngage.get().analytics()
 
     private val bottomNavigationSelectedListener =
         NavigationBarView.OnItemSelectedListener { item ->
@@ -36,6 +48,10 @@ class MainActivity : AppCompatActivity(), FragmentListener {
 
                 R.id.action_profile -> {
                     loadFragment(userTAG, "UserProfile")
+                }
+
+                R.id.action_demo -> {
+                    loadFragment(demoTAG, "DemoScreen")
                 }
             }
             true
@@ -55,8 +71,46 @@ class MainActivity : AppCompatActivity(), FragmentListener {
         bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottomNavigationView.setOnItemSelectedListener(bottomNavigationSelectedListener)
         loadFragment(homeTAG, "HomeScreen")
+        checkForPushPermission()
     }
 
+    private fun checkForPushPermission() {
+        //For App's targeting below 33
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (Build.VERSION.SDK_INT >= 33) {
+                Log.d("",
+                    "onResume: checking for PUSH_NOTIFICATIONS: " + (checkSelfPermission(PUSH_NOTIFICATIONS) === PackageManager.PERMISSION_GRANTED)
+                )
+                if (checkSelfPermission(PUSH_NOTIFICATIONS) !== PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(
+                        arrayOf<String>(PUSH_NOTIFICATIONS),
+                        102
+                    )
+                    WebEngage.get().user().setDevicePushOptIn(false)
+                } else {
+                    WebEngage.get().user().setDevicePushOptIn(true)
+                }
+            }
+        }
+    }
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String?>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        Log.d(
+            "",
+            "onRequestPermissionsResult permissions: $permissions grantResults: $grantResults"
+        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(PUSH_NOTIFICATIONS) === PackageManager.PERMISSION_GRANTED) {
+                WebEngage.get().user().setDevicePushOptIn(true)
+            } else {
+                WebEngage.get().user().setDevicePushOptIn(false)
+            }
+        }
+    }
     private fun loadFragment(fragmentTag: String, screenName: String) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
@@ -72,6 +126,7 @@ class MainActivity : AppCompatActivity(), FragmentListener {
                 homeTAG -> homeFragment
                 userTAG -> userFragment
                 cartTAG -> cartFragment
+                demoTAG -> demoFragment
                 else -> throw IllegalArgumentException("Unknown tag: $fragmentTag")
             }
             fragmentTransaction.add(R.id.fragment_container, newFragment, fragmentTag)
@@ -97,5 +152,25 @@ class MainActivity : AppCompatActivity(), FragmentListener {
         if (actionType == (homeTAG)) {
             loadFragment(actionType, "HomeScreen")
         }
+    }
+
+    override fun onCampaignClicked(
+        actionId: String,
+        deepLink: String,
+        data: WECampaignData
+    ): Boolean {
+        Log.d("TAG", "onCampaignClicked: ")
+        return false
+    }
+
+    override fun onCampaignException(campaignId: String?, targetViewId: String, error: Exception) {
+    }
+
+    override fun onCampaignPrepared(data: WECampaignData): WECampaignData? {
+        return data
+    }
+
+    override fun onCampaignShown(data: WECampaignData) {
+
     }
 }

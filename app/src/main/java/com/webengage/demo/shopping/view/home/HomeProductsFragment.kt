@@ -3,6 +3,7 @@ package com.webengage.demo.shopping.view.home
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,9 +16,16 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.webengage.demo.shopping.Constants
 import com.webengage.demo.shopping.view.cart.CartViewModel
 import com.webengage.demo.shopping.view.productDetail.ProductDetailActivity
 import com.webengage.demo.shopping.R
+import com.webengage.demo.shopping.SharedPrefsManager
+import com.webengage.demo.shopping.ShoppingApplication
+import com.webengage.personalization.WEPersonalization
+import com.webengage.personalization.callbacks.WECampaignCallback
+import com.webengage.personalization.callbacks.WEPlaceholderCallback
+import com.webengage.personalization.data.WECampaignData
 import kotlin.random.Random
 
 /**
@@ -25,13 +33,14 @@ import kotlin.random.Random
  * Use the [HomeProductsFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class HomeProductsFragment : Fragment() {
+class HomeProductsFragment : Fragment(), WEPlaceholderCallback, WECampaignCallback {
 
     private lateinit var clickedProduct: Product
     private var clickedCategoryIndex: Int = -1
     private lateinit var viewModel: HomeProductsViewModel
     private lateinit var parentView: View
     private lateinit var productDetailActivityResultLauncher: ActivityResultLauncher<Intent>
+    private var mSharedPrefsManager: SharedPrefsManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +60,10 @@ class HomeProductsFragment : Fragment() {
             }
     }
 
+    override fun onStart() {
+        super.onStart()
+        WEPersonalization.get().registerWEPlaceholderCallback("we_plceholder_home", this)
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -70,6 +83,13 @@ class HomeProductsFragment : Fragment() {
         viewModel.getProductsData().observe(viewLifecycleOwner, Observer {
             initView(it)
         })
+        mSharedPrefsManager = SharedPrefsManager.get()
+        if(mSharedPrefsManager!!.contains(Constants.JSON_URL)) {
+            context?.let { viewModel.setProducts(it,mSharedPrefsManager!!.getString(Constants.JSON_URL,"")) }
+        } else {
+            context?.let { viewModel.setProducts(it,"") }
+        }
+
         clickedProduct = viewModel.fetchProducts()!!
         listenForCartUpdate()
     }
@@ -86,6 +106,10 @@ class HomeProductsFragment : Fragment() {
             categoryView.id = Random.nextInt()
             val title = categoryView.findViewById<TextView>(R.id.tv_title)
             title.text = category.title
+            var products = category.products
+            if (category.title == "Electronics") {
+                products.add(2, Product("", "", "","campaign"))
+            }
             createProductList(category, categoryView)
         }
     }
@@ -115,4 +139,48 @@ class HomeProductsFragment : Fragment() {
         intent.putExtra("product", product)
         productDetailActivityResultLauncher.launch(intent)
     }
+
+    override fun onDataReceived(data: WECampaignData) {
+        Log.d("Tag", "mycallbacks onDataReceived ${data.targetViewId}, ${data.content!!.customData} ")
+        //Get the data for custom view and render your own UI by fetching data from the WECampaignData
+        //render the campaign on UI (own UI) and save the reference of WECampaignData attached with this UI,
+        //and when user clicks call the tackClick, as soon as yuo render call trackImpression
+    }
+
+    override fun onPlaceholderException(
+        campaignId: String?,
+        targetViewId: String,
+        error: Exception
+    ) {
+        Log.d("Tag", "mycallbacks onPlaceholderException $targetViewId, $error ")
+    }
+
+    override fun onRendered(data: WECampaignData) {
+        Log.d("Tag", "mycallbacks onRendered ${data.targetViewId}, ${data.content} ")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        WEPersonalization.get().unregisterWECampaignCallback(this)
+    }
+
+    override fun onCampaignClicked(
+        actionId: String,
+        deepLink: String,
+        data: WECampaignData
+    ): Boolean {
+        return false
+    }
+
+    override fun onCampaignException(campaignId: String?, targetViewId: String, error: Exception) {
+    }
+
+    override fun onCampaignPrepared(data: WECampaignData): WECampaignData? {
+        return data
+    }
+
+    override fun onCampaignShown(data: WECampaignData) {
+
+    }
+
 }

@@ -13,4 +13,9 @@
         android:icon="@drawable/ic_user_profile"
         android:title="Profile" />
 
+    <item
+        android:id="@+id/action_demo"
+        android:icon="@drawable/ic_demo"
+        android:title="Demo" />
+
 </menu>
