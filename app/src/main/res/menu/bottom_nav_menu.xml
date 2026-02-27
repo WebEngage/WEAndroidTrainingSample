@@ -5,17 +5,12 @@
         android:icon="@drawable/ic_home"
         android:title="Home" />
     <item
-        android:id="@+id/action_cart"
+        android:id="@+id/action_offers"
         android:icon="@drawable/ic_cart"
-        android:title="cart" />
+        android:title="Offers" />
     <item
-        android:id="@+id/action_profile"
-        android:icon="@drawable/ic_user_profile"
-        android:title="Profile" />
-
-    <item
-        android:id="@+id/action_demo"
+        android:id="@+id/action_recharge"
         android:icon="@drawable/ic_demo"
-        android:title="Demo" />
+        android:title="Recharge" />
 
 </menu>

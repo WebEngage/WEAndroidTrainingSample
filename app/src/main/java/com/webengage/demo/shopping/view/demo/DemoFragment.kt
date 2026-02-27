@@ -29,6 +29,11 @@ class DemoFragment : Fragment() {
         return view
     }
 
+    override fun onResume() {
+        super.onResume()
+        weAnalytics.screenNavigated("Demo Screen")
+    }
+
     private fun trackEvent(eventName: String) {
         val map: MutableMap<String, Any> = HashMap()
         val mClient: String = clientInput.text.toString().trim()

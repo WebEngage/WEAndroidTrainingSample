@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.textfield.TextInputEditText
 import com.webengage.demo.shopping.R
 import com.webengage.demo.shopping.SharedPrefsManager
+import com.webengage.demo.shopping.MainActivity
 import com.webengage.sdk.android.WebEngage
 import com.webengage.sdk.android.utils.Gender
 import com.webengage.demo.shopping.view.InlineFragment
@@ -26,6 +27,7 @@ import com.webengage.demo.shopping.view.InlineFragment
 class UserFragment : Fragment() {
 
     val weUser = WebEngage.get().user()
+    val weAnalytics = WebEngage.get().analytics()
     private var mSharedPrefsManager: SharedPrefsManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,6 +46,8 @@ class UserFragment : Fragment() {
             data["isUserLoggedIn"] = true;
             data["userName"] = storedUSerName;
         }
+        
+        WebEngage.get().analytics().screenNavigated("Login Screen")
     }
 
     private fun updateUserAttributes() {
@@ -84,15 +88,24 @@ class UserFragment : Fragment() {
         loginButton.setOnClickListener {
             val userName = usernameEditText.text.toString()
             val password = passwordEditText.text.toString()
-            // Perform login/authentication logic here
             if (isValidCredentials(userName, password)) {
                 hideLoginElements()
                 welcomeUser(userName, usernameTextView)
                 updateUserAttributes()
                 mSharedPrefsManager!!.put(SharedPrefsManager.USERNAME, userName)
+                
+                weUser.login(userName)
+                
+                (activity as? MainActivity)?.let { mainActivity ->
+                    if (android.os.Build.VERSION.SDK_INT >= 33) {
+                        mainActivity.checkForPushPermission()
+                    }
+                    mainActivity.findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.bottom_navigation)?.visibility = View.VISIBLE
+                    mainActivity.supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, com.webengage.demo.shopping.view.home.HomeFragment())
+                        .commit()
+                }
             } else {
-                // Display an error message or handle failed login
-                //show error
                 Toast.makeText(
                     activity?.applicationContext,
                     "Please check the user name entered",
@@ -102,11 +115,10 @@ class UserFragment : Fragment() {
         }
 
         logoutButton.setOnClickListener {
-            val userName = usernameEditText.text.toString()
-            val password = passwordEditText.text.toString()
-            // Perform login/authentication logic here
             mSharedPrefsManager!!.put(SharedPrefsManager.USERNAME, "")
+            weUser.logout()
             showLoginElements()
+            usernameTextView.visibility = View.GONE
         }
         return view
 

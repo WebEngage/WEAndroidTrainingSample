@@ -2,6 +2,8 @@ package com.webengage.demo.shopping
 
 object Constants {
      const val homeTAG = "HOME"
+     const val offersTAG = "OFFERS"
+     const val rechargeTAG = "RECHARGE"
      const val userTAG = "USER"
      const val cartTAG = "CART"
      const val demoTAG = "DEMO"

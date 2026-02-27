@@ -11,13 +11,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
-import com.webengage.demo.shopping.Constants.cartTAG
-import com.webengage.demo.shopping.Constants.demoTAG
 import com.webengage.demo.shopping.Constants.homeTAG
+import com.webengage.demo.shopping.Constants.offersTAG
+import com.webengage.demo.shopping.Constants.rechargeTAG
 import com.webengage.demo.shopping.Constants.userTAG
-import com.webengage.demo.shopping.view.cart.CartFragment
-import com.webengage.demo.shopping.view.demo.DemoFragment
-import com.webengage.demo.shopping.view.home.HomeProductsFragment
+import com.webengage.demo.shopping.view.home.HomeFragment
+import com.webengage.demo.shopping.view.offers.OffersFragment
+import com.webengage.demo.shopping.view.recharge.RechargeFragment
 import com.webengage.demo.shopping.view.user.UserFragment
 import com.webengage.personalization.callbacks.WECampaignCallback
 import com.webengage.personalization.data.WECampaignData
@@ -25,10 +25,10 @@ import com.webengage.sdk.android.WebEngage
 
 class MainActivity : AppCompatActivity(), FragmentListener, WECampaignCallback {
 
-    private val homeFragment = HomeProductsFragment()
+    private val homeFragment = HomeFragment()
+    private val offersFragment = OffersFragment()
+    private val rechargeFragment = RechargeFragment()
     private val userFragment = UserFragment()
-    private val cartFragment = CartFragment()
-    private val demoFragment = DemoFragment()
     private lateinit var bottomNavigationView: BottomNavigationView
     private val PUSH_NOTIFICATIONS =
         "android.permission.POST_NOTIFICATIONS" //Applicable from Android 13 and above
@@ -39,19 +39,22 @@ class MainActivity : AppCompatActivity(), FragmentListener, WECampaignCallback {
         NavigationBarView.OnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.action_home -> {
+                    weAnalytics.screenNavigated("home")
+                    weAnalytics.track("home_screen_viewed")
                     loadFragment(homeTAG, "HomeScreen")
                 }
 
-                R.id.action_cart -> {
-                    loadFragment(cartTAG, "CartScreen")
+                R.id.action_offers -> {
+                    weAnalytics.screenNavigated("offers")
+                    weAnalytics.track("offers_viewed")
+                    loadFragment(offersTAG, "OffersScreen")
                 }
 
-                R.id.action_profile -> {
-                    loadFragment(userTAG, "UserProfile")
-                }
+                R.id.action_recharge -> {
+                    weAnalytics.screenNavigated("recharge")
+                    weAnalytics.track("recharge_screen_viewed")
 
-                R.id.action_demo -> {
-                    loadFragment(demoTAG, "DemoScreen")
+                    loadFragment(rechargeTAG, "RechargeScreen")
                 }
             }
             true
@@ -60,21 +63,21 @@ class MainActivity : AppCompatActivity(), FragmentListener, WECampaignCallback {
     @SuppressLint("WrongConstant")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val windowInsetsController = ViewCompat.getWindowInsetsController(window.decorView)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && windowInsetsController != null) {
-            windowInsetsController.hide(WindowInsets.Type.statusBars())
-        } else {
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
-            actionBar?.hide()
-        }
         setContentView(R.layout.activity_main)
         bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottomNavigationView.setOnItemSelectedListener(bottomNavigationSelectedListener)
-        loadFragment(homeTAG, "HomeScreen")
-        checkForPushPermission()
+        
+        val storedUserName = SharedPrefsManager.get().getString(SharedPrefsManager.USERNAME, "")
+        if (storedUserName.isNullOrEmpty()) {
+            bottomNavigationView.visibility = View.GONE
+            loadFragment(userTAG, "UserProfile")
+        } else {
+            bottomNavigationView.visibility = View.VISIBLE
+            loadFragment(homeTAG, "HomeScreen")
+        }
     }
 
-    private fun checkForPushPermission() {
+    fun checkForPushPermission() {
         //For App's targeting below 33
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (Build.VERSION.SDK_INT >= 33) {
@@ -114,6 +117,10 @@ class MainActivity : AppCompatActivity(), FragmentListener, WECampaignCallback {
     private fun loadFragment(fragmentTag: String, screenName: String) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
+        
+        // Clear back stack when navigating via bottom navigation
+        fragmentManager.popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        
         for (fragment in fragmentManager.fragments) {
             fragmentTransaction.hide(fragment)
         }
@@ -124,9 +131,9 @@ class MainActivity : AppCompatActivity(), FragmentListener, WECampaignCallback {
         } else {
             val newFragment = when (fragmentTag) {
                 homeTAG -> homeFragment
+                offersTAG -> offersFragment
+                rechargeTAG -> rechargeFragment
                 userTAG -> userFragment
-                cartTAG -> cartFragment
-                demoTAG -> demoFragment
                 else -> throw IllegalArgumentException("Unknown tag: $fragmentTag")
             }
             fragmentTransaction.add(R.id.fragment_container, newFragment, fragmentTag)

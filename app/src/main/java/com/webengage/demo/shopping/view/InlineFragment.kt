@@ -86,6 +86,7 @@ class InlineFragment : Fragment(), WEPlaceholderCallback {
 
     override fun onDataReceived(data: WECampaignData) {
         Log.d("WebEngage", "onDataReceived: ${data.targetViewId}")
+        Log.d("WebEngage", "onDataReceived1: ${data.toString()}")
         val payload = data.content?.customData
         
         when (data.targetViewId) {
