@@ -1,0 +1,44 @@
+{
+  "cards": [
+    {
+      "id": "card_1",
+      "name": "Premium Infinite Card",
+      "tier": "tier_1",
+      "limit": "₹10,00,000",
+      "description": "Our flagship card for top-tier relationships. Unlimited lounge access and 5X rewards.",
+      "imageRes": "card_gradient_1"
+    },
+    {
+      "id": "card_2",
+      "name": "Signature Rewards Card",
+      "tier": "tier_2",
+      "limit": "₹3,00,000",
+      "description": "Elevated rewards on travel and dining with complimentary insurance cover.",
+      "imageRes": "card_gradient_2"
+    },
+    {
+      "id": "card_3",
+      "name": "Everyday Platinum Card",
+      "tier": "tier_3",
+      "limit": "₹1,00,000",
+      "description": "Great everyday value with cashback on groceries, fuel and bill payments.",
+      "imageRes": "card_gradient_3"
+    },
+    {
+      "id": "card_4",
+      "name": "Classic Silver Card",
+      "tier": null,
+      "limit": "₹50,000",
+      "description": "A simple starter card with no annual fee and easy EMI conversions.",
+      "imageRes": "card_gradient_4"
+    },
+    {
+      "id": "card_5",
+      "name": "Rewards Plus Card",
+      "tier": null,
+      "limit": "₹75,000",
+      "description": "Earn accelerated points on online shopping and entertainment.",
+      "imageRes": "card_gradient_5"
+    }
+  ]
+}

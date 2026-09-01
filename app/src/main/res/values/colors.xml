@@ -8,4 +8,31 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="bg">#FAF9F6</color>
+
+    <!-- Premium Bank cross-sell palette -->
+    <color name="bank_primary">#0B2545</color>
+    <color name="bank_primary_dark">#08182E</color>
+    <color name="bank_accent">#C9A24B</color>
+    <color name="bank_accent_light">#E7C878</color>
+    <color name="bank_surface">#F5F7FA</color>
+    <color name="bank_card_start">#13315C</color>
+    <color name="bank_card_end">#0B2545</color>
+    <color name="promo_bg">#FFFFFF</color>
+    <color name="promo_accent">#0B2545</color>
+    <color name="abandonment_bg">#FFF4E0</color>
+    <color name="abandonment_accent">#B8860B</color>
+    <color name="text_primary">#111827</color>
+    <color name="text_secondary">#6B7280</color>
+    <color name="hero_start">#0B2545</color>
+    <color name="hero_end">#13315C</color>
+    <color name="card1_start">#1A1A2E</color>
+    <color name="card1_end">#16213E</color>
+    <color name="card2_start">#0F3443</color>
+    <color name="card2_end">#34E89E</color>
+    <color name="card3_start">#4B2E5A</color>
+    <color name="card3_end">#7B4397</color>
+    <color name="card4_start">#232526</color>
+    <color name="card4_end">#414345</color>
+    <color name="card5_start">#6A3093</color>
+    <color name="card5_end">#A044FF</color>
 </resources>

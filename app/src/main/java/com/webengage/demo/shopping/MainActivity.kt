@@ -5,53 +5,62 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.view.WindowInsets
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
-import com.webengage.demo.shopping.Constants.cartTAG
-import com.webengage.demo.shopping.Constants.demoTAG
+import com.webengage.demo.shopping.Constants.accountTAG
+import com.webengage.demo.shopping.Constants.cardsTAG
 import com.webengage.demo.shopping.Constants.homeTAG
-import com.webengage.demo.shopping.Constants.userTAG
-import com.webengage.demo.shopping.view.cart.CartFragment
-import com.webengage.demo.shopping.view.demo.DemoFragment
-import com.webengage.demo.shopping.view.home.HomeProductsFragment
-import com.webengage.demo.shopping.view.user.UserFragment
-import com.webengage.personalization.callbacks.WECampaignCallback
-import com.webengage.personalization.data.WECampaignData
+import com.webengage.demo.shopping.view.account.AccountFragment
+import com.webengage.demo.shopping.view.cards.CardsFlowFragment
+import com.webengage.demo.shopping.view.home.HomeFragment
 import com.webengage.sdk.android.WebEngage
 
-class MainActivity : AppCompatActivity(), FragmentListener, WECampaignCallback {
+/**
+ * Post-login shell hosting a BottomNavigationView with 3 tabs: Home, Cards, Account.
+ * - The Cards tab defaults to Card Listing and owns its own push back stack
+ *   (Card Detail / Card Application are pushed inside [CardsFlowFragment], NOT as
+ *   separate bottom-nav destinations).
+ * - Login is a separate Activity, so this shell never shows on the login screen.
+ */
+class MainActivity : AppCompatActivity() {
 
-    private val homeFragment = HomeProductsFragment()
-    private val userFragment = UserFragment()
-    private val cartFragment = CartFragment()
-    private val demoFragment = DemoFragment()
+    private val homeFragment = HomeFragment()
+    private val cardsFragment = CardsFlowFragment()
+    private val accountFragment = AccountFragment()
     private lateinit var bottomNavigationView: BottomNavigationView
-    private val PUSH_NOTIFICATIONS =
-        "android.permission.POST_NOTIFICATIONS" //Applicable from Android 13 and above
+
+    private val PUSH_NOTIFICATIONS = "android.permission.POST_NOTIFICATIONS"
 
     private val weAnalytics = WebEngage.get().analytics()
+
+    /**
+     * Set when a Home inline CTA is deep-linking into Card Detail, so the Cards-tab
+     * selection listener does NOT reset the flow back to the listing root.
+     */
+    private var deepLinkingToDetail = false
 
     private val bottomNavigationSelectedListener =
         NavigationBarView.OnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.action_home -> {
-                    loadFragment(homeTAG, "HomeScreen")
+                    loadFragment(homeTAG)
+                    weAnalytics.screenNavigated("Home")
                 }
-
-                R.id.action_cart -> {
-                    loadFragment(cartTAG, "CartScreen")
+                R.id.action_cards -> {
+                    loadFragment(cardsTAG)
+                    if (deepLinkingToDetail) {
+                        // Coming from a Home CTA -> keep the deep-linked Card Detail.
+                        deepLinkingToDetail = false
+                    } else {
+                        // Tapping the Cards tab always lands on the Card Listing root.
+                        cardsFragment.popToRoot()
+                        weAnalytics.screenNavigated("Card Listing")
+                    }
                 }
-
-                R.id.action_profile -> {
-                    loadFragment(userTAG, "UserProfile")
-                }
-
-                R.id.action_demo -> {
-                    loadFragment(demoTAG, "DemoScreen")
+                R.id.action_account -> {
+                    loadFragment(accountTAG)
+                    weAnalytics.screenNavigated("Account")
                 }
             }
             true
@@ -60,117 +69,84 @@ class MainActivity : AppCompatActivity(), FragmentListener, WECampaignCallback {
     @SuppressLint("WrongConstant")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val windowInsetsController = ViewCompat.getWindowInsetsController(window.decorView)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && windowInsetsController != null) {
-            windowInsetsController.hide(WindowInsets.Type.statusBars())
-        } else {
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
-            actionBar?.hide()
-        }
         setContentView(R.layout.activity_main)
-        bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        bottomNavigationView = findViewById(R.id.bottom_navigation)
         bottomNavigationView.setOnItemSelectedListener(bottomNavigationSelectedListener)
-        loadFragment(homeTAG, "HomeScreen")
+        if (savedInstanceState == null) {
+            loadFragment(homeTAG)
+            weAnalytics.screenNavigated("Home")
+        }
         checkForPushPermission()
     }
 
+    /**
+     * Deep-link entry point used by the Home inline CTAs: switch to the Cards tab
+     * (which defaults to Card Listing) and open Card Detail.
+     */
+    fun openCardsFlowDetail(cardId: String) {
+        // Stash the deep-link target first; CardsFlowFragment opens Card Detail once
+        // its view is attached (it may not be attached yet when we switch tabs).
+        deepLinkingToDetail = true
+        cardsFragment.openCardDetail(cardId)
+        // Switching the selected tab triggers the nav listener -> loadFragment(cardsTAG).
+        bottomNavigationView.selectedItemId = R.id.action_cards
+    }
+
+    /** Reset the Cards tab back to its Card Listing root. */
+    fun resetCardsFlow() {
+        cardsFragment.popToRoot()
+    }
+
+    /** Programmatically move to the Cards tab (lands on Card Listing root). */
+    fun selectCardsTab() {
+        bottomNavigationView.selectedItemId = R.id.action_cards
+    }
+
     private fun checkForPushPermission() {
-        //For App's targeting below 33
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (Build.VERSION.SDK_INT >= 33) {
-                Log.d("",
-                    "onResume: checking for PUSH_NOTIFICATIONS: " + (checkSelfPermission(PUSH_NOTIFICATIONS) === PackageManager.PERMISSION_GRANTED)
-                )
-                if (checkSelfPermission(PUSH_NOTIFICATIONS) !== PackageManager.PERMISSION_GRANTED) {
-                    requestPermissions(
-                        arrayOf<String>(PUSH_NOTIFICATIONS),
-                        102
-                    )
-                    WebEngage.get().user().setDevicePushOptIn(false)
-                } else {
-                    WebEngage.get().user().setDevicePushOptIn(true)
-                }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Build.VERSION.SDK_INT >= 33) {
+            if (checkSelfPermission(PUSH_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(arrayOf(PUSH_NOTIFICATIONS), 102)
+                WebEngage.get().user().setDevicePushOptIn(false)
+            } else {
+                WebEngage.get().user().setDevicePushOptIn(true)
             }
         }
     }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String?>,
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        Log.d(
-            "",
-            "onRequestPermissionsResult permissions: $permissions grantResults: $grantResults"
-        )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(PUSH_NOTIFICATIONS) === PackageManager.PERMISSION_GRANTED) {
+            if (checkSelfPermission(PUSH_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
                 WebEngage.get().user().setDevicePushOptIn(true)
             } else {
                 WebEngage.get().user().setDevicePushOptIn(false)
             }
         }
     }
-    private fun loadFragment(fragmentTag: String, screenName: String) {
+
+    private fun loadFragment(fragmentTag: String) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         for (fragment in fragmentManager.fragments) {
             fragmentTransaction.hide(fragment)
         }
         val existingFragment = fragmentManager.findFragmentByTag(fragmentTag)
-
         if (existingFragment != null) {
             fragmentTransaction.show(existingFragment)
         } else {
             val newFragment = when (fragmentTag) {
                 homeTAG -> homeFragment
-                userTAG -> userFragment
-                cartTAG -> cartFragment
-                demoTAG -> demoFragment
+                cardsTAG -> cardsFragment
+                accountTAG -> accountFragment
                 else -> throw IllegalArgumentException("Unknown tag: $fragmentTag")
             }
             fragmentTransaction.add(R.id.fragment_container, newFragment, fragmentTag)
         }
-
         fragmentTransaction.commit()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        // Save the selected item index in the BottomNavigationView
-        outState.putInt("selectedItemId", bottomNavigationView.selectedItemId)
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        // Restore the selected item index in the BottomNavigationView
-        val selectedItemId = savedInstanceState.getInt("selectedItemId")
-        bottomNavigationView.selectedItemId = selectedItemId
-    }
-
-    override fun onFragmentAction(actionType: String) {
-        if (actionType == (homeTAG)) {
-            loadFragment(actionType, "HomeScreen")
-        }
-    }
-
-    override fun onCampaignClicked(
-        actionId: String,
-        deepLink: String,
-        data: WECampaignData
-    ): Boolean {
-        Log.d("TAG", "onCampaignClicked: ")
-        return false
-    }
-
-    override fun onCampaignException(campaignId: String?, targetViewId: String, error: Exception) {
-    }
-
-    override fun onCampaignPrepared(data: WECampaignData): WECampaignData? {
-        return data
-    }
-
-    override fun onCampaignShown(data: WECampaignData) {
-
+        Log.d(Constants.TAG, "loadFragment: $fragmentTag")
     }
 }

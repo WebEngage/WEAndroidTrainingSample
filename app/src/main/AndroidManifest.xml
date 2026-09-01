@@ -41,9 +41,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.productDetail.ProductDetailActivity"
+            android:name=".LoginActivity"
             android:exported="false"
-            android:label="@string/title_activity_product_detail"
             android:theme="@style/Theme.Shopping.NoActionBar" />
         <activity
             android:name=".MainActivity"

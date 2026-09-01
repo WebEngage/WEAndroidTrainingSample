@@ -85,7 +85,13 @@ class LicenseActivity : AppCompatActivity() {
     }
 
     private fun goToHome() {
-        val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
+        // No real auth: if a session already exists go straight to the shell,
+        // otherwise start at the Login screen.
+        val target = if (SessionManager.isLoggedIn()) {
+            MainActivity::class.java
+        } else {
+            LoginActivity::class.java
+        }
+        startActivity(Intent(this, target))
     }
 }
