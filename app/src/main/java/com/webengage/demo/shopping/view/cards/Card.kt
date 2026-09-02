@@ -5,6 +5,8 @@ data class Card(
     val name: String,
     val tier: String?,
     val limit: String,
+    val annualFee: String,
     val description: String,
-    val imageRes: String
+    val imageRes: String,
+    val features: List<String>
 )

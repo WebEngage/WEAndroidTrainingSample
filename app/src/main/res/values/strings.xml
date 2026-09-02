@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Premium Bank</string>
+    <string name="app_name">Meridian Bank</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_product_detail">ProductDetailActivity</string>
@@ -18,11 +18,15 @@
     <string name="url">URL</string>
 
     <!-- Cross-sell app -->
-    <string name="login_title">Premium Bank</string>
-    <string name="login_subtitle">Sign in to explore your card offers</string>
-    <string name="login_username_hint">Username</string>
+    <string name="login_brand">Meridian Bank</string>
+    <string name="login_title">Welcome back</string>
+    <string name="login_subtitle">Sign in to your demo session</string>
+    <string name="login_name_label">Full name</string>
+    <string name="login_name_hint">Priya Sharma</string>
     <string name="login_tier_label">Relationship tier</string>
-    <string name="login_button">Sign In</string>
+    <string name="login_tier_placeholder">Select a tier…</string>
+    <string name="login_button">Log in</string>
+    <string name="login_footer">Demo login only — no real credentials.</string>
     <string name="nav_home">Home</string>
     <string name="nav_cards">Cards</string>
     <string name="nav_account">Account</string>
@@ -31,6 +35,13 @@
     <string name="submit">Submit</string>
     <string name="logout">Logout</string>
     <string name="full_name_hint">Full Name</string>
+    <!-- Tier dropdown labels (index-aligned with tier_1..tier_4) -->
+    <string-array name="tier_labels">
+        <item>Tier 1 — Premium</item>
+        <item>Tier 2 — Gold</item>
+        <item>Tier 3 — Standard</item>
+        <item>Tier 4 — Basic (not eligible for offers)</item>
+    </string-array>
     <string name="phone_hint">Phone (optional)</string>
     <string name="email_hint">Email (optional)</string>
     <string name="agree_terms">I agree to the Terms &amp; Conditions and consent to being contacted about this card.</string>

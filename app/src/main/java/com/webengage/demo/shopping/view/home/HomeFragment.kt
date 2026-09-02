@@ -21,20 +21,20 @@ import com.webengage.sdk.android.WebEngage
 /**
  * Home screen:
  * - "Welcome to Visa" hero with the session username (generic gradient artwork).
- * - Inline View #1 (Promotion, placement id [Constants.PLACEMENT_PROMOTION]) — renders
- *   unconditionally per dashboard config.
- * - Inline View #2 (Abandonment, placement id [Constants.PLACEMENT_ABANDONMENT]) — only
- *   renders when Segment B matches (handled by the SDK; no app-side condition).
+ * - A SINGLE inline slot (property id [Constants.PLACEMENT_PROMOTION] = "visa_promotion").
+ *   The dashboard decides which campaign renders here: the Promotion campaign shows
+ *   first, and the Abandonment campaign replaces it once Segment B qualifies. The app
+ *   uses one WEInlineView for both.
+ * - A fallback view is shown when no campaign is rendered, and hidden once the real
+ *   inline renders.
  *
- * card_promotion_visited fires on CLICK of the Promotion block's CTA (not on load),
- * via the WECampaignCallback.onCampaignClicked hook. Both CTAs deep-link into the
- * Cards tab flow (Card Listing -> Card Detail).
+ * card_promotion_visited fires on CLICK of the inline CTA (not on load), via the
+ * WECampaignCallback.onCampaignClicked hook. The CTA deep-links into the Cards flow.
  */
 class HomeFragment : Fragment(), WECampaignCallback {
 
     private val weAnalytics = WebEngage.get().analytics()
-    private lateinit var promotionInline: WEInlineView
-    private lateinit var abandonmentInline: WEInlineView
+    private lateinit var inlineView: WEInlineView
     private lateinit var promotionFallback: View
 
     override fun onCreateView(
@@ -48,20 +48,25 @@ class HomeFragment : Fragment(), WECampaignCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val username = SessionManager.getUsername()
-        view.findViewById<TextView>(R.id.heroUsername).text =
-            if (username.isNotBlank()) "Hello, $username" else "Hello"
+        // Show the first name/handle as the greeting headline (matches the web design).
+        val firstName = username.trim().substringBefore(" ").ifBlank { "there" }
+        view.findViewById<TextView>(R.id.heroUsername).text = firstName
 
-        promotionInline = view.findViewById(R.id.promotionInline)
-        abandonmentInline = view.findViewById(R.id.abandonmentInline)
+        inlineView = view.findViewById(R.id.inlineView)
         promotionFallback = view.findViewById(R.id.promotionFallback)
 
-        // Navigate to the Cards tab from the quick-action, CTA banner, and fallback CTA.
+        // Navigate to the Cards tab from the quick-action, CTA banner, fallback CTA
+        // and the top-nav "Card" link.
         val goToCards = View.OnClickListener {
             (activity as? MainActivity)?.selectCardsTab()
         }
         view.findViewById<View>(R.id.quickExploreCards).setOnClickListener(goToCards)
         view.findViewById<View>(R.id.browseCardsButton).setOnClickListener(goToCards)
         view.findViewById<View>(R.id.promotionFallbackCta).setOnClickListener(goToCards)
+        view.findViewById<View>(R.id.navCard).setOnClickListener(goToCards)
+        view.findViewById<View>(R.id.navAccount).setOnClickListener {
+            (activity as? MainActivity)?.selectAccountTab()
+        }
     }
 
     override fun onStart() {
@@ -69,15 +74,15 @@ class HomeFragment : Fragment(), WECampaignCallback {
         weAnalytics.screenNavigated("Home")
         // Listen for campaign clicks so we can fire card_promotion_visited and deep-link.
         WEPersonalization.get().registerWECampaignCallback(this)
-        loadInlineViews()
+        loadInlineView()
     }
 
-    private fun loadInlineViews() {
-        // Start with the fallback visible; hide it only once the real inline renders.
+    private fun loadInlineView() {
+        // Start with the fallback visible; hide it only once a real campaign renders.
         promotionFallback.visibility = View.VISIBLE
-        promotionInline.load(Constants.PLACEMENT_PROMOTION, object : WEPlaceholderCallback {
+        inlineView.load(Constants.PLACEMENT_PROMOTION, object : WEPlaceholderCallback {
             override fun onDataReceived(data: WECampaignData) {
-                Log.d(Constants.TAG, "Promotion inline onDataReceived: ${data.targetViewId}")
+                Log.d(Constants.TAG, "Inline onDataReceived: ${data.targetViewId} campaign=${data.campaignId}")
             }
 
             override fun onPlaceholderException(
@@ -86,34 +91,14 @@ class HomeFragment : Fragment(), WECampaignCallback {
                 error: Exception
             ) {
                 // No campaign / resource failure -> keep the fallback view visible.
-                Log.d(Constants.TAG, "Promotion inline empty/exception: $targetViewId ${error.message}")
+                Log.d(Constants.TAG, "Inline empty/exception: $targetViewId ${error.message}")
                 activity?.runOnUiThread { promotionFallback.visibility = View.VISIBLE }
             }
 
             override fun onRendered(data: WECampaignData) {
-                // Real personalized campaign rendered -> hide the fallback.
-                Log.d(Constants.TAG, "Promotion inline onRendered: ${data.targetViewId}")
+                // A real campaign (promotion or abandonment) rendered -> hide the fallback.
+                Log.d(Constants.TAG, "Inline onRendered: ${data.targetViewId} campaign=${data.campaignId}")
                 activity?.runOnUiThread { promotionFallback.visibility = View.GONE }
-            }
-        })
-
-        // Abandonment slot: the WEInlineView collapses on its own when there's no
-        // campaign and expands when Segment B renders. Do NOT gate visibility here.
-        abandonmentInline.load(Constants.PLACEMENT_ABANDONMENT, object : WEPlaceholderCallback {
-            override fun onDataReceived(data: WECampaignData) {
-                Log.d(Constants.TAG, "Abandonment inline onDataReceived: ${data.targetViewId}")
-            }
-
-            override fun onPlaceholderException(
-                campaignId: String?,
-                targetViewId: String,
-                error: Exception
-            ) {
-                Log.d(Constants.TAG, "Abandonment inline empty/exception: $targetViewId ${error.message}")
-            }
-
-            override fun onRendered(data: WECampaignData) {
-                Log.d(Constants.TAG, "Abandonment inline onRendered: ${data.targetViewId}")
             }
         })
     }
@@ -130,14 +115,12 @@ class HomeFragment : Fragment(), WECampaignCallback {
         deepLink: String,
         data: WECampaignData
     ): Boolean {
-        Log.d(Constants.TAG, "onCampaignClicked: view=${data.targetViewId} deepLink=$deepLink")
+        Log.d(Constants.TAG, "onCampaignClicked: view=${data.targetViewId} campaign=${data.campaignId} deepLink=$deepLink")
 
-        // Fire card_promotion_visited ONLY for the Promotion block's CTA (on click).
-        if (data.targetViewId == Constants.PLACEMENT_PROMOTION) {
-            weAnalytics.track(Constants.EVENT_CARD_PROMOTION_VISITED)
-        }
+        // Fire card_promotion_visited on click of the inline CTA.
+        weAnalytics.track(Constants.EVENT_CARD_PROMOTION_VISITED)
 
-        // Both CTAs ("Apply" / "Continue Application") deep-link into the Cards flow.
+        // The CTA deep-links into the Cards flow (Card Listing -> Card Detail).
         (activity as? MainActivity)?.openCardsFlowDetail(deepLinkToCardId(deepLink))
 
         // We've handled navigation; tell the SDK not to also process the deep link.

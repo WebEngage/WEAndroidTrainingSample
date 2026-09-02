@@ -102,6 +102,11 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationView.selectedItemId = R.id.action_cards
     }
 
+    /** Programmatically move to the Account tab. */
+    fun selectAccountTab() {
+        bottomNavigationView.selectedItemId = R.id.action_account
+    }
+
     private fun checkForPushPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Build.VERSION.SDK_INT >= 33) {
             if (checkSelfPermission(PUSH_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {

@@ -2,141 +2,117 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bank_surface"
+    android:background="@color/mb_bg"
     android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:orientation="vertical">
 
-        <!-- Header with back arrow -->
+        <!-- Top bar: Back to Cards -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginBottom="12dp">
-
-            <ImageView
-                android:id="@+id/backButton"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:padding="8dp"
-                android:src="@drawable/ic_back_arrow"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Back" />
+            android:background="@color/white"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp">
 
             <TextView
+                android:id="@+id/backButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Card Details"
-                android:textColor="@color/text_primary"
-                android:textSize="16sp"
+                android:text="← Back to Cards"
+                android:textColor="@color/mb_ink_soft"
+                android:textSize="13sp"
                 android:textStyle="bold"
-                android:layout_marginStart="8dp" />
+                android:background="?attr/selectableItemBackground"
+                android:padding="4dp" />
         </LinearLayout>
 
-        <!-- Static hero card artwork -->
-        <RelativeLayout
+        <View
             android:layout_width="match_parent"
-            android:layout_height="190dp"
-            android:background="@drawable/card_gradient_1">
+            android:layout_height="1dp"
+            android:background="@color/mb_line" />
 
-            <View
-                android:layout_width="48dp"
-                android:layout_height="34dp"
-                android:layout_margin="20dp"
-                android:background="@drawable/card_chip" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
 
+            <!-- Big card image -->
+            <ImageView
+                android:id="@+id/cardArt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:contentDescription="@null"
+                android:src="@drawable/meridian_premium_infinite" />
+
+            <!-- What you get -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_margin="20dp"
-                android:text="Premium Infinite Card"
-                android:textColor="@color/white"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentEnd="true"
-                android:layout_margin="20dp"
-                android:text="₹10,00,000"
-                android:textColor="@color/bank_accent_light"
+                android:text="What you get"
+                android:textColor="@color/mb_ink"
+                android:textSize="15sp"
                 android:textStyle="bold"
-                android:textSize="16sp" />
-        </RelativeLayout>
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Premium Infinite Card"
-            android:textColor="@color/text_primary"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:layout_marginTop="18dp" />
+            <LinearLayout
+                android:id="@+id/featuresContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Credit limit up to ₹10,00,000"
-            android:textColor="@color/bank_accent"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:layout_marginTop="4dp" />
+            <!-- Annual fee surface row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/mb_surface_card"
+                android:padding="18dp"
+                android:layout_marginTop="20dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Key Benefits"
-            android:textColor="@color/text_primary"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="6dp" />
+                <TextView
+                    android:id="@+id/annualFeeLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Annual fee"
+                    android:textColor="@color/mb_ink_soft"
+                    android:textSize="13sp" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="• Unlimited domestic and international airport lounge access\n• 5X reward points on travel, dining and entertainment\n• Complimentary golf games and concierge service\n• Comprehensive travel and purchase insurance cover\n• Zero foreign currency markup on international spends"
-            android:textColor="@color/text_secondary"
-            android:textSize="14sp"
-            android:lineSpacingExtra="4dp" />
+                <TextView
+                    android:id="@+id/annualFeeValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="₹9,999 + GST"
+                    android:textColor="@color/mb_ink"
+                    android:textStyle="bold"
+                    android:textSize="13sp" />
+            </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Terms &amp; Conditions"
-            android:textColor="@color/text_primary"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="6dp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Card issuance is subject to eligibility and internal approval. Annual fees, finance charges and reward redemption are governed by the cardholder agreement. This is a demo screen with illustrative details only."
-            android:textColor="@color/text_secondary"
-            android:textSize="13sp"
-            android:lineSpacingExtra="3dp"
-            android:layout_marginBottom="24dp" />
-
-        <Button
-            android:id="@+id/startApplicationButton"
-            android:layout_width="match_parent"
-            android:layout_height="54dp"
-            android:background="@drawable/btn_accent_bg"
-            android:text="@string/start_application"
-            android:textColor="@color/bank_primary_dark"
-            android:textStyle="bold"
-            android:textAllCaps="false"
-            android:stateListAnimator="@null" />
-
+            <Button
+                android:id="@+id/startApplicationButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/mb_btn_navy"
+                android:text="Start Application"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                android:paddingTop="13dp"
+                android:paddingBottom="13dp"
+                android:stateListAnimator="@null" />
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>

@@ -5,40 +5,75 @@
       "name": "Premium Infinite Card",
       "tier": "tier_1",
       "limit": "₹10,00,000",
+      "annualFee": "₹9,999 + GST",
       "description": "Our flagship card for top-tier relationships. Unlimited lounge access and 5X rewards.",
-      "imageRes": "card_gradient_1"
+      "imageRes": "https://dmq2kle6yj1z5.cloudfront.net/meridian/meridian-premium-infinite.png",
+      "features": [
+        "Unlimited airport lounge access, worldwide",
+        "5X reward points on every spend",
+        "Dedicated relationship manager",
+        "Complimentary comprehensive travel insurance"
+      ]
     },
     {
       "id": "card_2",
       "name": "Signature Rewards Card",
       "tier": "tier_2",
       "limit": "₹3,00,000",
+      "annualFee": "₹2,999 + GST",
       "description": "Elevated rewards on travel and dining with complimentary insurance cover.",
-      "imageRes": "card_gradient_2"
+      "imageRes": "https://dmq2kle6yj1z5.cloudfront.net/meridian/meridian-signature-rewards.png",
+      "features": [
+        "Elevated rewards on travel and dining",
+        "Complimentary travel insurance cover",
+        "Airport lounge access, 4 visits/year",
+        "Fuel surcharge waiver"
+      ]
     },
     {
       "id": "card_3",
       "name": "Everyday Platinum Card",
       "tier": "tier_3",
       "limit": "₹1,00,000",
+      "annualFee": "Nil (lifetime free)",
       "description": "Great everyday value with cashback on groceries, fuel and bill payments.",
-      "imageRes": "card_gradient_3"
+      "imageRes": "https://dmq2kle6yj1z5.cloudfront.net/meridian/meridian-everyday-platinum.png",
+      "features": [
+        "Cashback on groceries and fuel",
+        "Cashback on utility bill payments",
+        "Contactless tap-to-pay",
+        "Easy EMI conversion on large purchases"
+      ]
     },
     {
       "id": "card_4",
       "name": "Classic Silver Card",
       "tier": null,
       "limit": "₹50,000",
+      "annualFee": "Nil (lifetime free)",
       "description": "A simple starter card with no annual fee and easy EMI conversions.",
-      "imageRes": "card_gradient_4"
+      "imageRes": "https://dmq2kle6yj1z5.cloudfront.net/meridian/meridian-classic-silver.png",
+      "features": [
+        "No annual fee, ever",
+        "Easy EMI conversion on all purchases",
+        "Simple, no-frills everyday card",
+        "Contactless tap-to-pay"
+      ]
     },
     {
       "id": "card_5",
       "name": "Rewards Plus Card",
       "tier": null,
       "limit": "₹75,000",
+      "annualFee": "₹499 + GST",
       "description": "Earn accelerated points on online shopping and entertainment.",
-      "imageRes": "card_gradient_5"
+      "imageRes": "https://dmq2kle6yj1z5.cloudfront.net/meridian/meridian-rewards-plus.png",
+      "features": [
+        "Accelerated points on online shopping",
+        "Bonus points on entertainment spends",
+        "Redeem points across 100+ brands",
+        "Zero point expiry for 3 years"
+      ]
     }
   ]
 }

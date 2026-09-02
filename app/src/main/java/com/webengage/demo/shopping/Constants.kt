@@ -18,7 +18,7 @@ object Constants {
      const val SESSION_TIER = "session_tier"
 
      // WebEngage custom user attribute
-     const val ATTR_RELATIONSHIP_VALUE_TIER = "policyNumber"
+     const val ATTR_RELATIONSHIP_VALUE_TIER = "relationship_value_tier"
 
      // WebEngage event names (use exactly as written)
      const val EVENT_CARD_PROMOTION_VISITED = "card_promotion_visited"
@@ -28,11 +28,22 @@ object Constants {
      // Allowed relationship tier values
      val TIER_OPTIONS = listOf("tier_1", "tier_2", "tier_3", "tier_4")
 
+     // Human-readable tier labels for the Account pill (match the website's TIER_LABELS)
+     val TIER_LABELS = mapOf(
+         "tier_1" to "tier_1 — Premium",
+         "tier_2" to "tier_2 — Gold",
+         "tier_3" to "tier_3 — Standard",
+         "tier_4" to "tier_4 — Basic (not eligible for offers)"
+     )
+
+     fun tierLabel(tier: String): String = TIER_LABELS[tier] ?: tier
+
      // Fragment tags for the card app shell
      const val cardsTAG = "CARDS"
      const val accountTAG = "ACCOUNT"
 
-     // Inline personalization placement ids (must match the dashboard campaign targetView)
-     const val PLACEMENT_PROMOTION = "visa_promotion"
-     const val PLACEMENT_ABANDONMENT = "visa_cart_abandonment"
+     // Single inline personalization placement id (must match the dashboard campaign
+     // targetView). Both the promotion and abandonment campaigns render into this one
+     // slot; the dashboard decides which shows.
+     const val PLACEMENT_PROMOTION = "we_home_inline"
 }

@@ -86,9 +86,12 @@ class CardsFlowFragment : Fragment() {
     }
 
     /** Card Detail -> Card Application (push). */
-    fun openCardApplication() {
+    fun openCardApplication(cardId: String) {
+        val application = CardApplicationFragment().apply {
+            arguments = Bundle().apply { putString(CardApplicationFragment.ARG_CARD_ID, cardId) }
+        }
         childFragmentManager.beginTransaction()
-            .replace(R.id.cards_flow_container, CardApplicationFragment(), "application")
+            .replace(R.id.cards_flow_container, application, "application")
             .addToBackStack("application")
             .commit()
     }

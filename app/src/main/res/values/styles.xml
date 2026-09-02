@@ -52,4 +52,28 @@
         <item name="android:imeOptions">actionDone</item>
     </style>
 
+    <!-- Meridian Bank form field styles (match the website's label + input) -->
+    <style name="MbFieldLabel">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/mb_ink_soft</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginBottom">6dp</item>
+    </style>
+
+    <style name="MbInput">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/mb_input_bg</item>
+        <item name="android:textColor">@color/mb_ink</item>
+        <item name="android:textColorHint">#9AA6B2</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:paddingStart">14dp</item>
+        <item name="android:paddingEnd">14dp</item>
+        <item name="android:paddingTop">11dp</item>
+        <item name="android:paddingBottom">11dp</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
 </resources>

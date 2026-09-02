@@ -23,14 +23,20 @@ object CardRepository {
             val array = JSONObject(json).getJSONArray("cards")
             for (i in 0 until array.length()) {
                 val obj = array.getJSONObject(i)
+                val featureList = mutableListOf<String>()
+                obj.optJSONArray("features")?.let { arr ->
+                    for (j in 0 until arr.length()) featureList.add(arr.getString(j))
+                }
                 cards.add(
                     Card(
                         id = obj.getString("id"),
                         name = obj.getString("name"),
                         tier = if (obj.isNull("tier")) null else obj.optString("tier"),
                         limit = obj.getString("limit"),
+                        annualFee = obj.optString("annualFee"),
                         description = obj.getString("description"),
-                        imageRes = obj.getString("imageRes")
+                        imageRes = obj.getString("imageRes"),
+                        features = featureList
                     )
                 )
             }

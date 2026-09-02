@@ -35,4 +35,16 @@
     <color name="card4_end">#414345</color>
     <color name="card5_start">#6A3093</color>
     <color name="card5_end">#A044FF</color>
+
+    <!-- Meridian Bank reference tokens -->
+    <color name="mb_ink">#0D1B2A</color>
+    <color name="mb_ink_soft">#5B6B7C</color>
+    <color name="mb_line">#E3E7EC</color>
+    <color name="mb_navy">#0B2545</color>
+    <color name="mb_navy_dark">#081A34</color>
+    <color name="mb_teal">#0F766E</color>
+    <color name="mb_teal_soft">#E6F4F2</color>
+    <color name="mb_gold">#C9A227</color>
+    <color name="mb_amber">#B45309</color>
+    <color name="mb_bg">#F5F6F8</color>
 </resources>

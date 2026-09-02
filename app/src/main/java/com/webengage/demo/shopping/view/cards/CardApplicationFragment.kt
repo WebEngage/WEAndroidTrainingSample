@@ -7,21 +7,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.CheckBox
+import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.google.android.material.checkbox.MaterialCheckBox
-import com.google.android.material.textfield.TextInputEditText
 import com.webengage.demo.shopping.Constants
 import com.webengage.demo.shopping.MainActivity
 import com.webengage.demo.shopping.R
+import com.webengage.demo.shopping.SessionManager
 import com.webengage.sdk.android.WebEngage
 
 /**
- * Card Application form:
- * - Full Name, Phone and Email fields (all optional).
- * - A mandatory "agree to Terms" checkbox, checked (enabled) by default. When it is
- *   unchecked the Submit button is disabled.
- * On submit fires card_application_completed, shows a success state, then returns
+ * Card Application — mirrors the website's /apply/[cardId] form: eyebrow with the
+ * card name, six fields (Full name prefilled with the session name, Email, Phone
+ * number, Monthly income, PAN, Address) and a mandatory "I agree…" checkbox. Submit
+ * is disabled until the checkbox is ticked. On submit fires
+ * card_application_completed { cardId, tier }, shows a success state, then returns
  * to the Cards tab root.
  */
 class CardApplicationFragment : Fragment() {
@@ -38,42 +40,44 @@ class CardApplicationFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val cardId = arguments?.getString(ARG_CARD_ID)
+        val card = CardRepository.findById(requireContext(), cardId)
+            ?: CardRepository.getCards(requireContext()).firstOrNull()
+
+        // Eyebrow shows the specific card name.
+        card?.let { view.findViewById<TextView>(R.id.cardEyebrow).text = it.name }
+
         view.findViewById<View>(R.id.backButton).setOnClickListener {
             (parentFragment as? CardsFlowFragment)?.goBack()
         }
 
-        val nameEditText = view.findViewById<TextInputEditText>(R.id.fullNameEditText)
-        val phoneEditText = view.findViewById<TextInputEditText>(R.id.phoneEditText)
-        val emailEditText = view.findViewById<TextInputEditText>(R.id.emailEditText)
-        val agreeCheckBox = view.findViewById<MaterialCheckBox>(R.id.agreeCheckBox)
-        val submitButton = view.findViewById<Button>(R.id.submitButton)
+        val fullName = view.findViewById<EditText>(R.id.fullNameEditText)
+        val agree = view.findViewById<CheckBox>(R.id.agreeCheckBox)
+        val submit = view.findViewById<Button>(R.id.submitButton)
         val formView = view.findViewById<LinearLayout>(R.id.formView)
         val successView = view.findViewById<LinearLayout>(R.id.successView)
 
-        // Submit is enabled only while the mandatory agreement is checked.
-        submitButton.isEnabled = agreeCheckBox.isChecked
-        submitButton.alpha = if (agreeCheckBox.isChecked) 1f else 0.5f
-        agreeCheckBox.setOnCheckedChangeListener { _, isChecked ->
-            submitButton.isEnabled = isChecked
-            submitButton.alpha = if (isChecked) 1f else 0.5f
+        // Prefill Full name with the session name (matches the website).
+        fullName.setText(SessionManager.getUsername())
+
+        // Submit enabled only while the mandatory agreement is checked.
+        fun refreshSubmit() {
+            submit.isEnabled = agree.isChecked
+            submit.alpha = if (agree.isChecked) 1f else 0.5f
         }
+        refreshSubmit()
+        agree.setOnCheckedChangeListener { _, _ -> refreshSubmit() }
 
-        submitButton.setOnClickListener {
-            if (!agreeCheckBox.isChecked) return@setOnClickListener
+        submit.setOnClickListener {
+            if (!agree.isChecked) return@setOnClickListener
 
-            // Name, phone and email are optional — capture whatever was entered.
-            val fullName = nameEditText.text?.toString()?.trim().orEmpty()
-            val phone = phoneEditText.text?.toString()?.trim().orEmpty()
-            val email = emailEditText.text?.toString()?.trim().orEmpty()
-
-            val attributes = mutableMapOf<String, Any>("agreed_terms" to true)
-            if (fullName.isNotEmpty()) attributes["full_name"] = fullName
-            if (phone.isNotEmpty()) attributes["phone"] = phone
-            if (email.isNotEmpty()) attributes["email"] = email
-
+            val attributes = mutableMapOf<String, Any>(
+                "cardId" to (card?.id ?: cardId.orEmpty()),
+                "tier" to SessionManager.getTier()
+            )
             weAnalytics.track(Constants.EVENT_CARD_APPLICATION_COMPLETED, attributes)
 
-            // Show success state, then return to the Cards tab root.
             formView.visibility = View.GONE
             successView.visibility = View.VISIBLE
 
@@ -89,5 +93,9 @@ class CardApplicationFragment : Fragment() {
         super.onStart()
         // Tag the screen on every landing (fresh or via back), per WebEngage docs.
         weAnalytics.screenNavigated("Card Application")
+    }
+
+    companion object {
+        const val ARG_CARD_ID = "card_id"
     }
 }

@@ -3,19 +3,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/bank_surface"
-    android:padding="12dp">
+    android:background="@color/mb_bg"
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp"
+    android:paddingTop="22dp">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/cards_title"
-        android:textColor="@color/text_primary"
+        android:text="Explore our cards"
+        android:textColor="@color/mb_ink"
         android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="12dp" />
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Static listing — same for every visitor, not tier-filtered"
+        android:textColor="@color/mb_ink_soft"
+        android:textSize="13sp"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="16dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/cardsRecyclerView"

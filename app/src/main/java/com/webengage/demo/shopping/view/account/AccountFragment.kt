@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.webengage.demo.shopping.Constants
 import com.webengage.demo.shopping.LoginActivity
 import com.webengage.demo.shopping.R
 import com.webengage.demo.shopping.SessionManager
@@ -30,8 +31,15 @@ class AccountFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        view.findViewById<TextView>(R.id.accountUsername).text = SessionManager.getUsername()
-        view.findViewById<TextView>(R.id.accountTier).text = SessionManager.getTier()
+        val name = SessionManager.getUsername()
+        val tier = SessionManager.getTier()
+
+        view.findViewById<TextView>(R.id.avatar).text = initials(name)
+        view.findViewById<TextView>(R.id.accountName).text = name
+        // Tier pill maps the value to its label (e.g. "tier_2 — Gold").
+        view.findViewById<TextView>(R.id.accountTierPill).text = Constants.tierLabel(tier)
+        // Email derived from the CUID (first name), e.g. "priya@email.com".
+        view.findViewById<TextView>(R.id.accountEmail).text = emailFromName(name)
 
         view.findViewById<Button>(R.id.logoutButton).setOnClickListener {
             SessionManager.clear()
@@ -48,5 +56,25 @@ class AccountFragment : Fragment() {
         super.onStart()
         // Tag the screen on every landing (fresh or via back), per WebEngage docs.
         WebEngage.get().analytics().screenNavigated("Account")
+    }
+
+    /**
+     * Derives a demo email from the CUID (the user's first name), e.g.
+     * "Priya Sharma" -> "priya@email.com". Non-alphanumeric chars are stripped.
+     */
+    private fun emailFromName(name: String): String {
+        val firstName = name.trim().substringBefore(" ")
+            .lowercase()
+            .filter { it.isLetterOrDigit() }
+        val handle = firstName.ifBlank { "user" }
+        return "$handle@email.com"
+    }
+
+    /** First + last initial (matches the website's avatar). */
+    private fun initials(name: String): String {
+        val parts = name.trim().split(Regex("\\s+")).filter { it.isNotEmpty() }
+        val first = parts.firstOrNull()?.firstOrNull()?.toString() ?: ""
+        val last = if (parts.size > 1) parts.last().first().toString() else ""
+        return (first + last).uppercase().ifBlank { "U" }
     }
 }
